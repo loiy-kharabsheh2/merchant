@@ -1,0 +1,3323 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Merchant KB</title>
+  <meta name="description" content="Merchant KB — refined, smooth interface" />
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg-top: #0b2230;
+      --bg-bottom: #0e1518;
+      --text: #e7eef6;
+      --muted: #9aa6b2;
+      --capp-top: #f0e6d8;
+      --capp-mid: #bfa48a;
+      --shadow-strong: 0 20px 48px rgba(0,0,0,0.5);
+      --motion-duration: 0.16s;
+      --motion-ease: cubic-bezier(.18,.88,.34,1);
+      --drawer-width: 720px;
+      --gap: 36px;
+      --home-icon-size: 160px;
+      --child-icon-size: 110px;
+      --monogram-home: 26px;
+      --monogram-child: 16px;
+      --item-transition-duration: 120ms;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      :root { --motion-duration: 0ms; --item-transition-duration: 0ms; }
+    }
+    * { box-sizing: border-box; }
+    html,body { height:100%; }
+    body{
+      margin:0;
+      font-family:"Rubik", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+      color:var(--text);
+      padding:22px;
+      overflow-x:hidden;
+    }
+
+    /* layout & grid */
+    .title{ position:fixed; top:18px; right:18px; font-weight:800; font-size:20px; color:var(--text); z-index:250; }
+    .stage{ position:relative; width:100%; height:calc(100vh - 44px); display:flex; align-items:center; justify-content:center; }
+    .icons-grid{ display:grid; gap:var(--gap); grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); align-items:center; justify-items:center; width:min(980px, 92%); transition: transform 160ms var(--motion-ease); user-select:none; padding:12px; }
+    .icons-grid.home .icon{ width:var(--home-icon-size); height:var(--home-icon-size); font-size:var(--monogram-home); }
+    .icons-grid.page .icon{ width:var(--child-icon-size); height:var(--child-icon-size); font-size:var(--monogram-child); }
+    .grid-item{ display:flex; flex-direction:column; align-items:center; gap:8px; width:100%; max-width:220px; opacity:0; transform:translateY(6px); transition: opacity var(--item-transition-duration) var(--motion-ease), transform var(--item-transition-duration) var(--motion-ease); }
+    .icons-grid.show-items .grid-item{ opacity:1; transform:none; }
+
+    /* original icon visual styles (restored) */
+    .icon{ border-radius:50%; display:flex; align-items:center; justify-content:center; background: linear-gradient(135deg, var(--capp-top), var(--capp-mid)); color:#000; font-weight:900; box-shadow: var(--shadow-strong); border:1px solid rgba(255,255,255,0.02); cursor:pointer; padding:0; outline:none; border:none; transition: transform var(--motion-duration) var(--motion-ease), box-shadow var(--motion-duration) var(--motion-ease), width var(--motion-duration) var(--motion-ease), height var(--motion-duration) var(--motion-ease), font-size var(--motion-duration) var(--motion-ease); will-change: transform, width, height, font-size; }
+    .icon:hover{ transform: translateY(-6px) scale(1.02); box-shadow:0 30px 60px rgba(0,0,0,0.45); }
+    .icon:focus{ outline: 3px solid rgba(0,0,0,0.12); outline-offset:6px; }
+    .monogram{ pointer-events:none; user-select:none; font-weight:900; }
+    .label{ color:#fff; font-weight:700; font-size:15px; text-align:center; max-width:160px; word-break:break-word; }
+
+    /* drawer + overlay */
+    .drawer-overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.35); z-index:200; opacity:0; visibility:hidden; transition: opacity var(--motion-duration) var(--motion-ease); pointer-events:none; }
+    .drawer-overlay.open{ opacity:1; visibility:visible; pointer-events:auto; }
+    .drawer{ position:fixed; top:18px; right:18px; bottom:18px; width:min(var(--drawer-width), calc(100% - 36px)); background: linear-gradient(180deg, rgba(11,34,48,0.98), rgba(6,10,12,0.98)); border-radius:12px; padding:18px; border:1px solid rgba(255,255,255,0.02); box-shadow: 0 28px 68px rgba(0,0,0,0.5); transform:translateX(8%); opacity:0; z-index:210; transition: transform var(--motion-duration) var(--motion-ease), opacity var(--motion-duration) var(--motion-ease); display:flex; flex-direction:column; overflow:auto; pointer-events: none; }
+    .drawer.open{ transform:translateX(0); opacity:1; pointer-events: auto; }
+    .drawer-header{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .drawer-title{ font-size:20px; font-weight:900; margin:0; color:var(--text); }
+
+    /* content / reading styles inside drawer (minimal styles only) */
+    .drawer-body{ margin-top:12px; color:var(--text); font-size:15px; line-height:1.6; white-space:pre-wrap; flex:1; overflow:auto; -ms-overflow-style: none; scrollbar-width: none; max-width: 980px; }
+    .drawer-body::-webkit-scrollbar { width: 0; height: 0; }
+    .drawer-body .kb-block{ margin-bottom:16px; }
+    .drawer-body p{ margin:10px 0; color:var(--text); font-weight:400; }
+
+    /* Heading / emphasis styles for the KB content (applies uniformly to old + new additions) */
+    .drawer-body .kb-heading{ font-size:18px; font-weight:800; color:#ffffff; margin:10px 0 6px; letter-spacing:0.2px; }
+    .drawer-body .kb-heading.kb-ar{ direction:rtl; text-align:right; }
+    .drawer-body .kb-heading.kb-en{ direction:ltr; text-align:left; }
+
+    /* stronger sub-heading style for specific labels requested (slightly larger + bold) */
+    .drawer-body .kb-subheading{ font-size:16px; font-weight:800; color:#ffffff; margin:8px 0 6px; letter-spacing:0.1px; }
+
+    /* subtle divider used instead of raw dashed lines */
+    .drawer-body .kb-divider{ height:1px; background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.06), rgba(255,255,255,0.02)); margin:12px 0; border-radius:1px; }
+
+    .drawer-body ul, .drawer-body ol{ margin:6px 0 6px 1.2em; padding-left:0.6em; }
+    .drawer-body li{ margin:6px 0; }
+
+    /* language direction classes (keep only direction helpers) */
+    .kb-en{ direction:ltr; text-align:left; unicode-bidi: embed; }
+    .kb-ar{ direction:rtl; text-align:right; unicode-bidi: embed; }
+
+    #globalBack{ position:fixed; bottom:18px; left:50%; transform:translateX(-50%); z-index:240; background: rgba(255,255,255,0.06); color: var(--text); border: 1px solid rgba(255,255,255,0.04); padding:10px 16px; border-radius:999px; font-weight:700; cursor:pointer; }
+    #globalBack[hidden]{ display:none !important; }
+    #madeBy{ position:fixed; left:18px; bottom:18px; z-index:260; color:var(--muted); font-size:13px; line-height:1.1; text-align:left; pointer-events:none; user-select:none; display:block; }
+
+    @media (max-width:920px){
+      :root{ --gap: 24px; --home-icon-size: 130px; --child-icon-size:90px; }
+      .drawer{ left:12px; right:12px; top:12px; bottom:12px; width: calc(100% - 24px); }
+      #globalBack{ padding:8px 12px; bottom:12px; }
+      #madeBy{ left:12px; bottom:12px; font-size:12px; }
+      .drawer-body{ padding-right:8px; padding-left:8px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="title" id="pageTitle">Merchant KB</div>
+  <div class="stage">
+    <div id="grid" class="icons-grid home" role="list" aria-label="categories"></div>
+  </div>
+  <div id="drawerOverlay" class="drawer-overlay" aria-hidden="true"></div>
+  <aside id="drawer" class="drawer" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="drawerTitle" aria-label="Solution">
+    <div class="drawer-header">
+      <h3 id="drawerTitle" class="drawer-title">Title</h3>
+      <button id="drawerClose" aria-label="Close" title="Close" style="background:transparent;border:0;color:var(--text);font-size:18px;cursor:pointer" type="button">✕</button>
+    </div>
+    <div id="drawerBody" class="drawer-body"></div>
+  </aside>
+  <button id="globalBack" aria-label="Back" hidden>Back</button>
+  <div id="madeBy">Made by<br>Loiy Kharabshe</div>
+
+  <script>
+  (function(){
+    'use strict';
+
+    // --- TREE (categories) ---
+    // Adjusted: moved "sold-out" inside "unable-prepare"; merged refund-related keys under "refund-issues".
+    const TREE = {
+      order: {
+        title: "Order-related issue",
+        children: [
+          { key:"unable-prepare", title:"Unable To Prepare Meals", children:[
+              { key:"sold-out", title:"Item sold out / Out of stock", children:false },
+              { key:"rest-closed", title:"The restaurant is closed" },
+              { key:"rest-busy", title:"The restaurant is busy and can't accept orders" }
+            ]
+          },
+          { key:"long-prep", title:"Long meal preparation time", children:false },
+          { key:"no-couriers", title:"No couriers accept the order", children:false },
+          { key:"pickup-slow", title:"Courier pick-up is too slow", children:false },
+          { key:"missed-items", title:"Courier missed some items during pick-up", children:false },
+          { key:"food-large", title:"Food too large / heavy", children:false },
+          { key:"refund-issues", title:"Refund issues", children:[
+              { key:"auto-refund", title:"Inquiry about automatic refunds by Keeta", children:false },
+              { key:"refund-result", title:"Inquiry about order refund result", children:false },
+              { key:"unsatisfied", title:"Unsatisfied with dispute result/policies", children:false },
+              { key:"refund-status", title:"Inquiry about order refund status", children:false }
+            ]
+          },
+          { key:"wrong-order", title:"Picked up the wrong order", children:false },
+          { key:"order-taken", title:"The order has been taken by someone else", children:false }
+        ]
+      },
+      "non-order": {
+        title: "Non-order issue",
+        children: [
+          { key:"account-registration", title:"Account registration", children:false }, 
+          { key:"system-operations", title:"Inquiry about system operations (PC/APP/POS)", children:[
+          { key:"accept-mode", title:"Order accepting mode settings", children:false }, 
+          { key:"merchant-closed", title:"Merchant closed / rider report", children:false },
+          { key:"merchant-hotline", title:"Merchant hotline", children:false }
+             ]
+          },
+
+            
+          { key:"account-deletion", title:"Account deletion", children:false },
+          { key:"qualification", title:"Qualification materials for onboarding", children:false },
+          { key:"abnormal-login", title:"Abnormal login", children:[
+              { key:"abnormal-password", title:"Password" },
+              { key:"abnormal-email", title:"Email" }
+            ]
+          },
+          { key:"restaurant-info", title:"Restaurant information modification", children:[
+              { key:"store-name", title:"Store Name / Category / Address" },
+              { key:"header-image", title:"Header Image" },
+              { key:"min-order", title:"Minimum Order Value" },
+              { key:"prep-time", title:"Order preparation time" },
+              { key:"phone", title:"Phone" },
+              { key:"open-hours", title:"Open Hours" }
+            ]
+          },
+          { key:"menu-mod", title:"Menu modification", children:[
+              { key:"create-item", title:"Create new item" },
+              { key:"edit-group", title:"Edit item" },
+              { key:"sort-item", title:"Sort item" },
+              { key:"item-avail", title:"Item available / Unavailable" }
+            ]
+          },
+          { key:"marketing", title:"Marketing campaign inquiry", children:false },
+          { key:"material-purchase", title:"Material purchase", children:false },
+          { key:"request-bills", title:"Request bills", children:[
+              { key:"invoice", title:"Invoice", children:false },
+              { key:"download-zone", title:"Download Zone", children:false }
+            ]
+          },
+          { key:"settlement", title:"Settlement / withdrawal issues", children:[
+              { key:"settlement-not-received", title:"Settlement not received" },
+              { key:"payment-unsuccessful", title:"Payment unsuccessful" },
+              { key:"in-progress-not-received", title:"In progress / Didn't receive" }
+            ]
+          },
+          { key:"link-bank", title:"Link / verify bank cards", children:false },
+          { key:"bd-noncomp", title:"BD non-compliant behaviours", children:false },
+          { key:"commission-issues", title:"Commission issues", children:false },
+          { key:"courier-attitude", title:"Courier's attitude issues", children:false },
+          { key:"hardware", title:"Hardware setting (POS / Printer)", children:[
+              { key:"closed", title:"Unusually closed / rest mode" },
+              { key:"unable-charge", title:"Unable to charge" },
+              { key:"paper-light", title:"Paper color is light" },
+              { key:"printer-not", title:"Printer doesn't print" },
+              { key:"device-stuck", title:"Device is stuck" },
+              { key:"device-restart", title:"Device keeps restarting" }
+            ]
+          }
+        ]
+      },
+      faq: {
+        title: "Frequently Asked Questions",
+        children: [
+          { key:"Private-information", title:"information", children:false },
+          { key:"merchant-fewer-items", title:"Merchant fewer order", children:false },
+          { key:"courier-no-press-pickup", title:"Courier did not press pickup button", children:false },
+          { key:"customer-change-plan", title:"Customer change plan", children:false }
+
+        ]
+      },
+      script: { title: "Script", children: false }
+    };
+
+    // --- CONTENT: full content (all previous entries preserved) ---
+    const CONTENT = {
+      "script": `  (N/A)
+(Greeting) 
+Hi, ()  with you from keeta customer service 
+Hi, ()  with you from keeta customer service. How can I assist you today ?
+ أهلا ,() معك من خدمة عملاء كيتا، وأنا هنا لمساعدتك 
+اهلا، () من خدمة عملاء كيتا كيف بقدر أساعدك اليوم ؟
+
+(Extra information)
+Could you please provide me with more details about your issue
+Could you please clarify the problem you’re facing so I can assist you properly
+هل يمكنك من فضلك تزويدي بمزيد من التفاصيل حول مشكلتك
+هل يمكنك توضيح المشكلة التي تواجهها حتى أتمكن من مساعدتك بافضل شكل ممكن
+
+
+
+(Confirm )
+
+I’m truly sorry for any inconvenience this may have caused. Your experience matters, and I want to make things right. Can you confirm if you’re inquiring about the 000 order from restaurant 000?
+آسف جدًا على أي إزعاج صار معك. يهمنا تجربتك ونحن هنا لمساعدتك. ممكن تأكد لنا إذا كنت تستفسر عن طلب 0000 من مطعم 0000 ؟
+
+(Hold )
+(1 Minute)
+Please allow me a minute to check the situation for you, and I’ll get back to you
+لو تكرمت اسمحلي بدقيقة اشيكلك على الموضوع وارجع لحضرتك
+(3 Minutes)
+Please give me two to three minutes at most while I contact the courier and confirm the situation for you
+لو تكرمت اسمحلي من دقيقتين الى ثلاث دقائق اتواصل مع المندوب واتاكدلك من الوضع
+
+
+(Extra minute)
+Sorry for the delay, I just need one more minute
+There’s been a slight delay, please stay with me for one more minute
+Thank you for your patience, I just need one more minute 
+أعذرني على التأخير، بس محتاج دقيقة زيادة
+صار شوية تأخير، لو سمحت خليك معي دقيقة زيادة
+شكرا لصبرك ولكن محتاج دقيقة زيادة
+
+(Thanks)
+Thank you for your patience
+شكرًا لصبرك وتفهمك
+
+(Anything else)
+It was a pleasure helping you today. Is there anything else I can help you with? 
+كان من الجميل مساعدتك اليوم الله يعطيك الف عافيه وصحة هل اتشرف بمساعدتك في أي شيء أخر ؟
+
+(Ending )
+
+It was my pleasure assisting you today. You will receive a notification to rate this conversation after the chat ends. Your feedback is very important to improve our services.
+⭐ ⭐ ⭐ ⭐ ⭐ Very satisfied
+⭐ ⭐ ⭐ ⭐ Satisfied
+⭐ ⭐ ⭐ Neutral
+⭐ ⭐ Unsatisfied
+⭐ Very unsatisfied
+Thank you for contacting Keeta
+
+تشرفت بمساعدتك اليوم، سيظهر لك اشعار لتقييم المحادثة بيننا رأيك يهمنا لتحسين خدمتنا أكثر، وأتمنى لك يوم سعيد
+⭐ ⭐ ⭐ ⭐ ⭐ راضٍ جدًا
+⭐ ⭐ ⭐ ⭐ راضٍ
+⭐ ⭐ ⭐ محايد
+⭐ ⭐ غير راضٍ
+⭐ غير راضٍ إطلاقً
+اشكرًا لتواصلك مع كيتا
+
+-------------------------------------------------------------------------------
+
+(Adherence to conversation etiquette )
+
+Please adhere to the etiquette of conversation. I am here to assist you in the best possible way 
+الرجاء الالتزام بآداب المحادثة من فضلك ، انا موجود لمساعدتك بأفضل شكل ممكن 
+
+I understand your frustration with the issue, our merchant partner. Please adhere to conversation etiquette so I can assist you 
+ اتفهم استيائك من المشكلة شريكنا التاجر ، ارجو منك الالتزام بآداب المحادثة لأتمكن من مساعدتك 
+
+Due to the failure to adhere to conversation etiquette and since we previously asked for clarification of your inquiry without receiving a response, it is difficult for us to assist you at this time. To save time for you and other customers waiting for service, we will unfortunately close this chat with you now. If you encounter any issues, please feel free to open a new chat, and we will make our best efforts to assist and serve you. Thank you for your understanding and support
+نظرا لعدم الالتزام بآداب المحادثة و بما أننا قمنا بسؤالك مسبقا ولم تعطينا توضيح استفسارك ، فمن الصعب علينا مساعدتك في هذا الوقت، ولتوفير الوقت على حضرتك و على باقي العملاء الذين ينتظرون الخدمة، للأسف سنقوم بإغلاق هذه الدردشة معك الآن، في حال واجهتك أي مشكلة يرجى من فضلك فتح دردشة جديدة و سنقوم ببذل أفضل الجهود لمساعدتك و خدمتك، شكرا لتفهمك و دعمك . 
+
+-------------------------------------------------------------------------------
+
+(Apologies )
+
+I’m sorry if you had any problem or didn’t feel comfortable, and I really appreciate you reaching out to me 
+انا بعتذر منك لو واجهت أي مشكلة أو تجربة مش مريحة. أنا ممتن لتواصلك معي 
+
+I’m sorry for the issue that occurred sir , and I completely understand how you feel
+آسف لحضرتك على المشكلة اللي صارت، وفاهم شعورك تمامًا
+
+I apologize for any inconvenience caused by this issue, and we are always working to improve the service 
+
+أعتذر عن أي إزعاج قد تسببت فيه المشكلة، ونحن نعمل دائمًا لتحسين الخدمة 
+
+I apologize for any inconvenience caused by the delay, and we thank you for your patience and understanding 
+
+أعتذر عن أي إزعاج قد تسبب به التاخير ، ونشكر لك صبرك وتفهمك 
+
+I am truly sorry for any inconvenience caused. Your experience matters to us, and we are here to assist you 
+
+اسف جدًا على أي إزعاج صار معك. يهمنا تجربتك ونحن هنا لمساعدتك 
+
+I completely understand how you felt, and I apologize if anything bothered you. We appreciate your cooperation 
+أفهم تمامًا كيف شعرت، وأعتذر إذا كان هناك أي شيء أزعجك. نحن نقدر تعاونك 
+
+I completely understand your anger towards the courier's behavior, and I apologize for any inconvenience caused by these actions 
+أفهم تمامًا شعوركم بالغضب من تصرف المندوب، وأعتذر عن أي إزعاج تسببت به هذه التصرفات 
+
+I apologize for the actions that upset you, and we appreciate your communication with us 
+أعتذر عن التصرفات التي أغضبتكم، ونحن نقدر لكم تواصلكم معنا 
+
+-------------------------------------------------------------------------------
+
+(Frequent requests )
+No specific request
+Ask for compensation
+Ask for calling him
+Ask for calling the customer
+Ask for calling the courier 
+Ask for the courier phone numebr 
+Ask for the customer phone number 
+Ask for the BD phone number
+Ask for Escalating the issue
+Ask for Extending the time
+Ask for Extending the courier time
+Ask for assign a courier 
+Ask for Blocking the courier 
+Ask to cancel the order
+Ask to transfer the order to a car courier 
+Ask to adjust his open hour
+Ask to modify his menu 
+Ask to modify his Merchant Information
+Ask to change the merchant's status 
+Ask to File a complaint against the courier
+Ask to File a complaint against the BD
+Ask to File a complaint against the customer`,
+
+      "material-purchase": `(Keeservice (FAQ) = Material purchase)
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر لطلب المنتجات الخاصة بكيتا  
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+(اخبار التاجر انه سيتم رفع طلبه الى مدير الاعمال)
+
+EN - Script
+I will provide feedback to the business manager regarding your situation. The business manager will address your issue within a week. Please be patient
+
+AR - Script
+راح أبلغ مدير الأعمال عن ملاحظاتك، وهو راح يتعامل مع موضوعك خلال أسبوع. نرجو منك الصبر، و شاكرين تعاونك
+
+----------------------------------------------------------
+
+(EscalationTemplate)
+Feedback time:
+Case ID:
+Store ID:
+Store Name:
+Store Address:
+Store Contact Information:966-
+The brand manager:
+Full Description :`,
+
+      "abnormal-password": `(Keeservice (FAQ) = Abnormal login)
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر بسبب انه فقد كلمة السر الخاصة به  
+
+(خطوات الحل)
+
+((1) توجيه التاجر لاعادة تعيين كلمة السر الخاصة به بشكل يدوي  )
+
+----------------------------------------------------------
+
+EN - Script
+On the login homepage, choose [Forgot Password] and follow the operation prompts. If you log in with an email, enter the registered and bound email, and reset the password through the email link; if you log in with a mobile phone number, enter the registered mobile phone number, and reset the password after mobile phone verification
+
+AR - Script
+من خلال صفحة تسجيل الدخول، اضغط على [نسيت كلمة المرور] واتبع التعليمات. إذا كنت تسجل الدخول باستخدام الإيميل، أدخل بريدك الإلكتروني المسجل والمربوط بحسابك، وبعدها تقدر تعيد تعيين كلمة المرور من خلال الرابط اللي يصلك على الإيميل. أما إذا كنت تستخدم رقم الجوال، فأدخل رقمك المسجل وتقدر تعيد تعيين كلمة المرور بعد التحقق من الجوال
+
+----------------------------------------------------------
+
+((2) اذا رفض التاجر أو اصر على المساعدة من خدمه العملاء او أن رمز التحقق لا يصل يتم جمع معلومات التاجر وتصعيد المشكلة)
+
+EN - Script
+I apologize for any inconvenience. Kindly provide me with your store's ID or the phone number associated with your account to escalate the issue to the relevant team for further follow-up
+
+AR - Script
+أعتذر عن أي الإزعاج. لو تكرمت، يرجى تزويدي بالرقم المعرف لمتجرك أو برقم الهاتف المرتبط بحسابك حتى أتمكن من تصعيد المشكلة إلى الفريق المختص للمتابعة
+
+----------------------------------------------------------
+
+(EscalationTemplate)
+Feedback time:
+Case ID:
+Store ID: - OR - Store Contact Information:966-
+Full Description :`,
+
+      "abnormal-email": `(Keeservice (FAQ) = Abnormal login)
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر بسبب انه فقد بريده الالكتروني
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+((1) توجيه التاجر للتواصل مع صاحب المتجر لأن مدير الأعمال قام بتزويده بها عند توقيع العقود)
+
+EN - Script
+I advise you to contact your store owner, as the account manager has provided them with a copy of the account’s login information
+
+AR - Script
+أنصحك بالتواصل مع صاحب المتجر الخاص بك، حيث أن مدير الحساب قام بتزويده بنسخة من معلومات تسجيل الدخول الخاصة بالحساب 
+
+----------------------------------------------------------
+
+((2) اذا ابلغ التاجر ان صاحب المتجر لا يملك المعلومات يتم نصحه بالتواصل مع مدير الأعمال الخاص به )
+
+EN - Script
+I recommend reaching out to your Account Manager , as they have a copy of your information that may help in regaining access to your Account
+
+AR - Script
+أنصحك بالتواصل مع مدير الأعمال الخاص بك، حيث يمتلك نسخة من معلوماتك التي قد تساعد في استعادة الوصول إلى حسابك
+
+----------------------------------------------------------
+
+((3) اذا رفض التاجر او اصر على المساعدة من خدمه العملاء يتم جمع معلومات التاجر وتصعيد المشكلة)
+
+EN - Script
+I apologize for any inconvenience . Kindly provide me with your store ID or the phone number associated with your account to escalate the issue to the relevant team for further follow-up
+
+AR - Script
+أعتذر عن أي الإزعاج. لو تكرمت، يرجى تزويدي بالرقم المعرف لمتجرك أو برقم الهاتف المرتبط بحسابك حتى أتمكن من تصعيد المشكلة إلى الفريق المختص للمتابعة
+
+---------------------------------------------------------
+
+(EscalationTemplate)
+Feedback time:
+Case ID:
+Store ID: - OR - Store Contact Information:966-
+Full Description :`,
+
+      "in-progress-not-received": `(Keeservice (FAQ) = Settlement/withdrawal issues)
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر بسبب أن عملية التسوية قيد المعالجة لفترة طويلة او أن نظام يظهر له أن عملية التسوية نجحت ولكن لم تصل الاموال الى حسابه
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+((1) الأستعلام عن الفترة التي استمرت فيها المشكلة)
+
+EN - Script 
+We apologize for the inconvenience. Could you please let us know how long the settlement delay has been ongoing?
+AR - Script 
+نعتذر عن الإزعاج، ممكن توضح لنا كم فترة تأخر تسوية الأموال؟
+
+----------------------------------------------------------
+
+(اذا كانت المشكلة أقل من ثلاث ايام يكون الحل تهدئة التاجر واخباره أن عمليات التسوية تستغرق بالعادة 3 ايام عمل)
+
+EN - Script
+In the processing of merchant settlement payments, it will usually be completed within 3 working days, and it is recommended to check the result again after 3 business days
+
+AR - Script
+في عملية تسوية المدفوعات للمطعم، عادةً ما يتم الانتهاء منها في غضون 3 أيام عمل، ويوصى بالتحقق من النتيجة مرة أخرى بعد 3 أيام عمل
+
+----------------------------------------------------------
+
+(اذا كانت الفترة اكثر من ثلاث ايام يتم تصعيد المشكلة)
+
+EN - Script
+I will report back to the relevant department for inquiry and expect to contact you within 3 business days to feedback on the results
+
+AR - Script
+سأقوم بالإبلاغ إلى القسم المعني للاستفسار ومن المتوقع أن يتواصلوا معك في غضون 3 أيام عمل لتقديم التغذية الراجعة حول النتائج
+
+----------------------------------------------------------
+
+(EscalationTemplate)
+Feedback time:
+Case ID:
+Store ID:
+Store Name:
+Store Address:
+Store Contact Information:966-
+The brand manager:
+Full Description :`,
+
+      "settlement-not-received": `((Keeservice (FAQ) = Settlement/withdrawal issues))
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر بسبب ان التسوية الأسبوعية لم تصل في موعدها
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+(1) التأكد من أن البطاقة البنكية المرتبطة بالحساب خالية من المشاكل وانها هي البطاقة التي تم اختيارها لتحويل الاموال عليها
+
+----------------------------------------------------------
+
+(اذا كانت البطاقة تعمل بشكل طبيعي ولا يوجد مشاكل قم بتوجيه التاجر لسحب الأموال يدويا)
+
+EN - Script
+Log in to the merchant's PC backend, then go to the "Financial Management" section. After that, select "Invoice" and click on the "Withdraw" option located at the top corner
+
+AR - Script
+يرجى منك الدخول الى واجهة التحكم الخاصة بك على الكمبيوتر، ثم التوجه إلى قسم "الإدارة المالية". بعد ذلك، اختر "الفواتير"، ومن ثم اضغط على خيار "سحب الأموال" الموجود في الزاوية العليا
+
+----------------------------------------------------------
+
+(اذا كان هنالك مشكلة ي البطاقة وتحتاج تعديل أو تعيينها كبطاقة السحب يتم توجيه التاجر لتعديل الخطأ)
+
+EN - Script
+Log in to the merchant's PC backend, then go to the "Financial Management" section. After that, select "Bank Card" To be able to modify your bank card details
+
+AR - Script
+يرجى الدخول إلى واجهة التحكم الخاصة بالتاجر على الكمبيوتر، ثم التوجه إلى قسم "الإدارة المالية". بعد ذلك، اختر "بطاقة البنك" لتتمكن من تعديل بيانات البطاقة البنكية الخاصة بك
+
+----------------------------------------------------------
+
+( اذا لا زالت المشكلة مستمرة وفشلت محاولات التاجر يتم تصعيد المشكلة)
+
+EN - Script
+I have recorded your problem in detail and will assist you in feeding it back to the Business Manager (BD), who will contact you within 1-2 working days
+
+AR - Script
+لقد قمت بتوثيق مشكلتك بالتفصيل وسأساعدك في رفعها إلى مدير الأعمال ، وسيتواصل معك خلال 1–2 يومي عمل
+
+----------------------------------------------------------
+
+(EscalationTemplate)
+Feedback time:
+Case ID:
+Store ID:
+Store Name:
+Store Address:
+Store Contact Information:966-
+The brand manager:
+Full Description :`,
+
+      "payment-unsuccessful": `(Keeservice (FAQ) = Settlement/withdrawal issues)
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر بسبب انه حاول سحب امواله بشكل يدوي ولكن ظهرت له مشكلة تقنيه منعته من استكمال عملية السحب
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+((1) يتم طلب صورة من التاجر للتحقق من نوع الخطا الذي يظهر له)
+
+EN - Script
+Can you please provide me with a screenshot of the issue
+
+AR - Script
+بتقدر تزودني بلقطة شاشة للمشكلة لو سمحت
+
+----------------------------------------------------------
+
+((2) يظهر للتاجر سبب فشل عملية السحب وهنالك مشاكل يمكن حلها من قبل التاجر ومشاكل تتطلب تصعيد)
+
+----------------------------------------------------------
+
+(اخطاء يمكن للتاجر حلها والتعامل معها مثل)
+بيانات المستفيد خاطئة - Incorrect beneficiary info
+الحساب معطل - The account has been disabled
+الاسم لا يطابق رقم البطاقة - Mismatched name and card No
+استرداد بسبب استثناء في الحساب - Refund due to account exception
+
+(الحل : أطلب من التاجر المحاولة مرة أخرى لاحقاً أو استخدام بطاقة بنكية أخرى)
+
+EN - Script
+Sometimes, the system may need additional time to process the transfer. Trying again after a short while may resolve the issue
+If the current card cannot be used to withdraw the amount, you may try using another bank card linked to your account to complete the transaction
+
+AR - Script
+أحيانًا، قد يحتاج النظام إلى بعض الوقت الإضافي لمعالجة التحويل، ومن الممكن أن المحاولة بعد فترة قصيرة ان تقوم بحل المشكلة
+إذا لم يعمل البطاقة الحالية لسحب المبلغ، يمكنك محاولة استخدام بطاقة بنك أخرى مرتبطة بحسابك لإتمام المعاملة
+
+----------------------------------------------------------
+
+(اخطاء بالنظام لا يمكن للتاجر حلها مثل)
+خطأ في نظام البنك - Bank system error
+خطأ في معالجة الطلب - Order processing error
+القائمة السوداء - internal payment blacklist
+معلومات المستفيد غير صحيحة - Incorrect beneficiary info
+فشل الدفع - Payment failed
+
+(الحل : تصعيد المشكلة الى الفريق المختص للمراجعة)
+
+EN - Script
+I will inform the relevant department to follow up on this matter. You can expect to be contacted within 3 business days
+
+AR - Script
+سأقوم بإبلاغ القسم المعني للاستفسار عن الموضوع، ومن المتوقع أن يتم التواصل معك خلال 3 أيام عمل
+
+----------------------------------------------------------
+
+(EscalationTemplate)
+Feedback time:
+Case ID:
+Store ID:
+Store Name:
+Store Address:
+Store Contact Information:966-
+The brand manager:
+Full Description :`,
+
+      "item-avail": `(Keeservice (FAQ) = Menu modification)
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر لتحويل حالة صنف معين الى متوفر أو غير متوفر    
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+((1) توجيه التاجر لتغيير حالة الطلب بشكل يدوي من الحاسوب وتطبيق الهاتف وجهاز كيتا)
+
+----------------------------------------------------------
+
+(الحاسوب)
+EN - Script
+To set a product as available or unavailable on the menu, log in to the merchant backend on your PC, then go to Product Management → Item Management. Select the item you want to turn on or off the shelves. You can perform this action on a single item or in batch
+
+AR - Script
+لتعيين منتج كمتاح أو غير متاح في القائمة، قم بتسجيل الدخول إلى لوحة تحكم التاجر من جهاز الكمبيوتر، ثم انتقل إلى قسم إدارة المنتجات ← إدارة الأصناف. ثم اختر الصنف الذي تريد تفعيله أو إيقافه عن الرفوف. يمكنك تنفيذ هذا الإجراء على صنف واحد أو على عدة أصناف دفعة واحدة
+
+----------------------------------------------------------
+
+(تطبيق الهاتف)
+EN - Script
+To set a product as available or unavailable from the mobile app, log in to the Keeta merchant app, then go to Products. Using the switch button on the right side of the item, you can set the item as available or unavailable.
+
+AR - Script
+لتعيين منتج كمتاح أو غير متاح من خلال تطبيق الجوال، قم بتسجيل الدخول إلى تطبيق التاجر ، ثم انتقل إلى قسم المنتجات. ثم باستخدام زر التبديل الموجود على الجهة اليمنى من الصنف، يمكنك تعيين الصنف كمتاح أو غير متاح
+
+----------------------------------------------------------
+
+(من جهاز نقاط البيع)
+EN - Script
+To set a product as available or unavailable on the POS machine, log in to the POS machine, then go to Item Management. Using the switch button on the right side of the item, you can set the item as available or unavailable
+
+AR - Script
+لتعيين منتج كمتاح أو غير متاح على جهاز نقاط البيع ، قم بتسجيل الدخول إلى الجهاز ، ثم انتقل إلى قسم إدارة الأصناف. ثم باستخدام زر التبديل الموجود على الجهة اليمنى من الصنف، يمكنك تعيين الصنف كمتاح أو غير متاح
+
+----------------------------------------------------------
+
+((2) اذا واجه التاجر مشكلة اثناء ذلك ينصح بالتواصل مع مدير الاعمال الخاص به حتى يقوم بمساعدته بشكل مباشر)
+
+EN - Script
+If you encounter any issues, I recommend reaching out to your business manager. They will be able to assist you directly and resolve the issue quickly
+
+AR - Script
+إذا واجهت أي مشكلة، أنصحك بالتواصل مع مدير الأعمال الخاص بك، حيث سيكون قادرًا على مساعدتك بشكل مباشر وحل المشكلة بسرعة`,
+
+      "sort-item": `(Keeservice (FAQ) = Menu modification)
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر لفرز الاصناف وترتيبها    
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+((1) توجيه التاجر لفرز الاصناف بشكل يدوي من الحاسوب فقط)
+
+EN - Script
+To sort items, log in to the merchant backend on your PC, then go to Product Management → Item Management → Sort Item. You can freely sort the items by dragging them
+
+AR - Script
+ لترتيب الأصناف، قم بتسجيل الدخول إلى واجهة التحكم الخاصة بالتاجر على الحاسوب، ثم توجه إلى إدارة المنتجات → إدارة الأصناف → ترتيب الأصناف. يمكنك ترتيب الأصناف بكل حرية عن طريق سحبها
+
+----------------------------------------------------------
+
+((2) اذا واجه التاجر مشكلة اثناء ذلك ينصح بالتواصل مع مدير الاعمال الخاص به حتى يقوم بمساعدته بشكل مباشر)
+
+EN - Script
+If you encounter any issues, I recommend reaching out to your business manager. They will be able to assist you directly and resolve the issue quickly
+
+AR - Script
+إذا واجهت أي مشكلة، أنصحك بالتواصل مع مدير الأعمال الخاص بك، حيث سيكون قادرًا على مساعدتك بشكل مباشر وحل المشكلة بسرعة`,
+
+      "edit-group": `(Keeservice (FAQ) = Menu modification)
+
+(شرح توضيحي للمشكل)
+
+يتواصل التاجر لتعديل الأصناف أو المجموعات في قائمة الطعام الخاصة به
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+((1) توجيه التاجر لتعديل الاصناف بشكل يدوي من الحاسوب وتطبيق الهاتف فقط)
+
+----------------------------------------------------------
+
+(الحاسوب)
+EN - Script
+To modify items, log in to your merchant backend, then go to Product Management → Item Management/Group Management. Select the item or group you wish to edit and click on it to open the editing page. After making the necessary changes, the modifications will take effect once they are reviewed and approved
+
+AR - Script
+لتعديل الاصناف، قم بتسجيل الدخول إلى واجهة التحكم الخاصة بالتاجر من الحاسوب، ثم توجه إلى قسم إدارة المنتجات ومنه إلى إدارة الأصناف/إدارة المجموعات. اختر الصنف أو المجموعة التي ترغب في تعديلها، واضغط عليها لفتح صفحة التعديل. بعد إجراء التعديلات المطلوبة، سيتم تفعيل التغييرات بعد مراجعتها والموافقة عليها
+
+----------------------------------------------------------
+
+( تطبيق الهاتف)
+EN - Script
+To modify items from the app, log in to the merchant app, then go to Products → Item Management/Group Management. Select the item or group you wish to edit and click on it to open the editing page. After making the necessary changes, the modifications will take effect once they are reviewed and approved
+
+AR - Script
+لتعديل الاصناف من الهاتف، قم بتسجيل الدخول إلى تطبيق التاجر، ثم توجه إلى المنتجات → إدارة الأصناف/إدارة المجموعات. اختر الصنف أو المجموعة التي ترغب في تعديلها واضغط عليها لفتح صفحة التعديل. بعد إجراء التعديلات، سيتم تفعيل التغييرات بعد مراجعتها والموافقة عليها
+
+----------------------------------------------------------
+
+((2) اذا واجه التاجر مشكلة اثناء ذلك ينصح بالتواصل مع مدير الاعمال الخاص به حتى يقوم بمساعدته بشكل مباشر)
+
+EN - Script
+If you encounter any issues, I recommend reaching out to your business manager. They will be able to assist you directly and resolve the issue quickly
+
+AR - Script
+إذا واجهت أي مشكلة، أنصحك بالتواصل إلى مدير الأعمال الخاص بك، حيث سيكون قادرًا على مساعدتك بشكل مباشر وحل المشكلة بسرعة`,
+
+      "create-item": `(Keeservice (FAQ) = Menu modification)
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر من اجل اضافة اصناف جديدة على قائمة الطعام
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+((1) توجيه التاجر لاضافة الاصناف بشكل يدوي من الحاسوب فقط)
+
+(الحاسوب)
+EN - Script
+To add items to your menu, please log in to the Keeta merchant backend On PC. Product management is categorized into Item Management and Group Management, where groups can be applied to multiple products simultaneously. You can select New Item/Group for adding individual items or use the Create in Batch feature for uploading a large number of items at once. Please be advised that newly submitted items will take effect on your menu only after they have been reviewed and approved.
+
+AR - Script
+لإضافة أصناف جديدة إلى قائمة الطعام الخاصة بك، يرجى تسجيل الدخول إلى الواجهة الخلفية لمتجرك على الحاسوب ، حيث تنقسم إدارة المنتجات إلى قسمين: إدارة العناصر وإدارة المجموعات، مع العلم أن المجموعات تتيح لك تنظيم عدة أصناف تحت تصنيف واحد. يمكنك اختيار إضافة صنف/مجموعة جديدة في حال كنت ترغب في إضافة عدد محدود من الأصناف، أو استخدام خاصية الإنشاء الجماعي لإضافة كمية كبيرة من الأصناف دفعة واحدة وبسرعة أكبر. يرجى الملاحظة أن أي صنف جديد تقوم بإضافته سيظهر في قائمة الطعام ويصبح متاحاً للطلب فور انتهاء عملية المراجعة والموافقة عليه
+
+----------------------------------------------------------
+
+((2) اذا واجه التاجر مشكلة اثناء ذلك ينصح بالتواصل مع مدير الاعمال الخاص به حتى يقوم بمساعدته بشكل مباشر)
+
+EN - Script
+If you encounter any issues, I recommend reaching out to your business manager. They will be able to assist you directly and resolve the issue quickly
+
+AR - Script
+إذا واجهت أي مشكلة، أنصحك بالتواصل إلى مدير الأعمال الخاص بك، حيث سيكون قادرًا على مساعدتك بشكل مباشر وحل المشكلة بسرعة`,
+
+      "link-bank": `(Keeservice (FAQ) = Link / verify bank cards)
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر بسبب للاستفسار او بسبب مشاكل تتعلق بالبطاقة البنكية
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+((1) اذا تواصل التاجر للاسفسار عن سياسة التعامل مع البطاقات البنكية)
+
+EN - Script
+Regarding the policy for bank cards, you can link multiple cards to your account on the same time and modify or remove them at any time. However, you must select one card only to receive your earnings (settlements). If you wish to change the settlement card, you can do so at any time, and the transfers will begin to the new card starting from the next billing cycle
+
+AR - Script
+فيما يخص سياسة التعامل مع البطاقات البنكية، يمكنك ربط عدة بطاقات بحسابك في وقت واحد وتعديلها أو حذفها في أي وقت. ومع ذلك، يجب عليك اختيار بطاقة واحدة فقط لتلقي الأرباح (التسويات). إذا قررت تغيير بطاقة التسوية، يمكنك القيام بذلك في أي وقت، وسيتم بدء التحويل إلى البطاقة الجديدة اعتبارًا من دورة الفاتورة التالية
+
+
+----------------------------------------------------------
+
+((2) اذا تواصل التاجر يريد أضافة او تعديل او حذف بطاقة بنكية)
+
+EN - Script
+to link a new bank card to your account, please log in to your Merchant Back Office via computer, navigate to the Financial Management section, and select Bank Card. From this page, you can add a new bank card or modify/remove an existing one. Please note that the changes will be implemented once the review process is complete. Additionally, you may designate only one card as your primary settlement card
+
+AR - Script
+لربط بطاقة بنكية جديدة بحسابك، يرجى تسجيل الدخول إلى الواجهة الخلفية للتاجر عبر جهاز الحاسوب، ثم الانتقال إلى قسم الإدارة المالية واختيار البطاقة البنكية. ستظهر لك صفحة التحكم التي تتيح لك إضافة بيانات بطاقة جديدة، أو تعديل وحذف البطاقات المسجلة مسبقاً، وسيتم اعتماد التغييرات فور اكتمال عملية المراجعة. علماً بأنه يمكنك تحديد بطاقة واحدة فقط لتكون البطاقة المعتمدة لإجراء التسويات المالية
+
+----------------------------------------------------------
+
+((3) اذا تواصل التاجر بسبب صعوبة في ربط بطاقته البنكية)
+
+EN - Script
+I apologize for the inconvenience you're facing with linking your bank card. I will escalate the issue to the relevant team for further follow-up, and you will receive a response from the team within 1-2 business days
+
+AR - Script
+أعتذر عن الإزعاج الذي تواجهه بسبب المشكلة في ربط بطاقتك البنكية. سأقوم برفع المشكلة إلى القسم المختص لمتابعتها، وستتلقى ردًا من الفريق خلال 1-2 يوم عمل
+
+----------------------------------------------------------
+
+(EscalationTemplate)
+Feedback time:
+Case ID:
+Store ID:
+Store Name:
+Store Address:
+Store Contact Information:966-
+The brand manager:
+Full Description :
+
+----------------------------------------------------------
+
+(قائمه البنوك المعتمدة من قبل المنصة )
+
+بنك البلاد
+مصرف الإنماء
+مصرف الراجحي
+البنك العربي الوطني
+بنك الجزيرة
+بنك مسقط
+البنك السعودي الفرنسي
+بنك بي إن بي باريبا
+مجموعة دويتشه بنك
+بنك الإمارات دبي الوطني
+بنك الخليج الدولي
+بنك البحرين الوطني
+بنك الكويت الوطني
+البنك الوطني الباكستاني
+البنك التجاري الوطني
+بنك الرياض
+مجموعة سامبا المالية
+البنك المركزي السعودي
+البنك السعودي الأول
+البنك الأول
+البنك السعودي للاستثمار
+بنك الدولة الهندي
+بنك زراعات
+البنك الصناعي والتجاري الصيني
+جي بي مورغان تشيس
+بنك قطر الوطني
+ميتسوبيشي يو اف جيه المالية القابضة
+بنك أبوظبي الأول
+ستاندرد تشارترد`,
+
+      "marketing": `(Keeservice (FAQ) = Marketing campaign inquiry)
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر للاستفسار عن الحملات الترويجية بشكل عام او الغائها او تفعيلها
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+((1) اذا تواصل التاجر يستفسر عن الحملات الترويجية بشكل عام)
+
+EN - Script
+Marketing campaigns are special offers aimed at attracting customers and increasing sales, and they can be launched either by the merchant or the platform. There are two types of campaigns: The first type is the campaigns launched directly by the merchant, where the merchant bears all the costs related to the campaign without needing platform review
+The second type is the campaigns launched by the platform, where the platform provides a certain amount of support for the marketing activities, while the merchant bears the remaining costs. The activities offered by the platform usually include discounts, free shipping, or reduced shipping costs. It’s important to note that participation in these activities is entirely optional, and the merchant can choose the activities that align with their business strategies
+
+AR - Script
+الحملات الترويجية هي عروض خاصة تهدف إلى جذب العملاء وزيادة المبيعات، ويمكن أن يتم إطلاقها من قبل التاجر أو المنصة. هناك نوعان من الحملات: النوع الأول هو الحملات التي يطلقها التاجر مباشرة، حيث يتحمل التاجر جميع التكاليف المتعلقة بالحملة دون الحاجة إلى مراجعة من قبل المنصة
+أما النوع الثاني، فهو الحملات التي تطلقها المنصة، حيث تقدم المنصة دعمًا معينًا للأنشطة الترويجية، بينما يتحمل التاجر النسبة المتبقية من التكاليف. الأنشطة التي تقدمها المنصة تشمل عادةً خصومات، توصيل مجاني، أو توصيل بتكلفة مخفضة. تجدر الإشارة إلى أن المشاركة في هذه الأنشطة تكون اختيارية تمامًا، ويستطيع التاجر اختيار الأنشطة التي تتناسب مع استراتيجياته التجارية
+
+----------------------------------------------------------
+
+((2) اذا تواصل التاجر يريد طريقة انشاء حملة ترويجية)
+
+EN - Script
+You can start a marketing campaign at any time. Simply log in to your merchant dashboard on the computer, then go to [Marketing Center] → [Merchant Promotion]. After that, select the type of campaign you prefer, set the start date, and it will be activated immediately.
+
+AR - Script
+يمكنك البدء في إنشاء الحملة الترويجية في أي وقت. فقط قم بتسجيل الدخول إلى لوحة التحكم الخاصة بك على الكمبيوتر، ثم توجه إلى [مركز التسويق] → [الترويج التاجر]. بعد ذلك، اختر نوع الحملة التي تفضلها، ثم حدد تاريخ البدء، وسيتم تفعيل الحملة مباشرة.
+
+----------------------------------------------------------
+
+((3) اذا تواصل التاجر يريد الغاء الحملة الترويجية)
+
+EN - Script
+You can stop the marketing campaign at any time. Simply log in to your restaurant dashboard on your personal computer, then go to [Marketing Center] → [Merchant Promotion] → [My Promotion]. After that, all active campaigns on your account will appear, and you can click the “Terminate” option to apply the change immediately
+
+AR - Script
+يمكنك إيقاف الحملة الترويجية في أي وقت. فقط قم بتسجيل الدخول إلى لوحة تحكم المطعم على الكمبيوتر الشخصي، ثم توجه إلى [مركز التسويق] → [الترويج التاجر] → [نشاطاتي الترويجية]. بعد ذلك ستظهر لك جميع النشاطات الفعالة على حسابك ويمكنك اضغط على خيار "إيقاف" ليتم تنفيذ التغيير فورا
+
+----------------------------------------------------------
+
+((4) اذا واجه التاجر مشكلة اثناء ذلك ينصح بالتواصل مع مدير الاعمال الخاص به حتى يقوم بمساعدته بشكل  مباشر)
+
+EN - Script
+If you encounter any issues  , I recommend reaching out to your business manager. They will be able to assist you directly and resolve the issue quickly
+
+AR - Script
+إذا واجهت أي مشكلة ، أنصحك بالتواصل مع مدير الأعمال الخاص بك، حيث سيكون قادرًا على مساعدتك بشكل مباشر وحل المشكلة بسرعة`,
+
+      "courier-attitude": `(Keeservice (FAQ) = Courier's attitude issues)
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر للشكوى على المندوب
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+((1) اعتذار نيابة عن السائق وتهدئه التاجر بدون تصعيد المشكلة )
+
+EN - Script
+I am very sorry for the bad experience you had. On behalf of the rider, I apologize to you. We take such issues very seriously, and I have made a detailed record of it to be feedback to the relevant department. Keeta has strict management measures for rider, which will be linked to their performance evaluation. We will strengthen the management of courier
+
+AR - Script
+أنا آسف جدًا للتجربة السيئة اللي مرّيت فيها. بالنيابة عن السائق، أعتذر منك. إحنا نأخذ مثل هالمشاكل بشكل جدي، وقد قمت بتسجيل التفاصيل بشكل دقيق لرفعها للقسم المعني
+كيتا عندها إجراءات صارمة لإدارة السائقين، واللي رح تكون مرتبطة بتقييم أدائهم. راح نعزز إدارة السائقين لضمان تحسين الخدمة
+
+----------------------------------------------------------
+
+((2) نفس السكريبت لكن بصيغه اخرى )
+
+EN - Script
+I completely understand your concern, and I’m really sorry for what happened.
+Your feedback has been carefully recorded and has already been shared with the relevant team for follow-up.
+We take this matter very seriously, and we’re working on strengthening courier management to prevent similar situations in the future.
+Thank you for bringing this to our attention and for your patience
+
+AR - Script
+أفهم استياءك تمامًا، وحاب أعتذر لك بصدق عن اللي صار
+ملاحظتك تم تسجيلها بالكامل، وسيتم رفعها فورا للفريق المختص للمتابعة
+نأخذ هالموضوع بجدية كبيرة، ونعمل على تحسين إدارة المندوبين لتفادي تكرار مثل هالمواقف
+شكرًا لك على تنبيهنا وصبرك، وإن شاء الله تكون تجربتك القادمة أفضل`,
+
+      "qualification": `(Keeservice (FAQ) = Qualification materials for restaurant onboarding)
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر يسال عن المستندات اللازمة للتسجيل  
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+((1) تزويد التاجر بقائمة المستندات المطلوبة)
+
+EN - Script
+To complete restaurant onboarding, please make sure you have the following qualification materials ready:
+1-Commercial registration
+2-VAT （Value-Added Tax）
+3-Commercial activity license
+4-Bank card
+5-ID card of the person signing the contract
+6-Merchant's basic information
+Once you prepare these materials, the registration can move forward smoothly
+
+AR - Script
+لاستكمال تسجيل المطعم، يرجى التأكد من توفر المتطلبات التالية:
+1- السجل التجاري
+2- شهادة ضريبة القيمة المضافة
+3- رخصة مزاولة النشاط التجارية
+4- بطاقة بنكية
+5- هوية الشخص الموقّع على العقد
+6- المعلومات الأساسية الخاصة بالمطعم
+متى ما جهزت هالوثائق، تقدر تكمل إجراءات الانضمام بكل سلاسة`,
+
+      "account-deletion": `(Keeservice (FAQ) = Account deletion)
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر يريد حذف حسابه  
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+((1) تصعيد المشكلة للفريق المختص )
+
+EN - Script
+We have forwarded your store delisting or termination request to your business manager. Please allow 1-2 business days for them to contact you. Thank you for your patience!
+
+AR - Script
+لقد قمنا بتحويل طلبك لإلغاء أو إنهاء المتجر إلى مدير الأعمال. يرجى السماح من 1-2 يوم عمل للتواصل معك. شكراً لصبرك!
+
+----------------------------------------------------------
+
+(EscalationTemplate)
+Feedback time:
+Case ID:
+Store ID:
+Store Name:
+Store Address:
+Store Contact Information:966-
+The brand manager:
+Full Description :`,
+
+      "account-registration": `(Keeservice (FAQ) = Account registration)
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر لطلب التسجيل في المنصة
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+((1) توجيه التاجر للتقديم بنفسه عبر صفحة الانضمام الرسمية الخاصة بـكيتا)
+
+EN - Script
+Hello, thank you for your support of Keeta.
+Please visit the following webpage and submit the merchant cooperation application. A sales manager will contact you after submission.
+https://merchant.keeta-global.com/web/joinin
+
+AR - Script
+مرحبًا، شكرًا لدعمك لمنصة كيتا.
+يرجى زيارة الرابط التالي وتعبئة نموذج الانضمام، وسيقوم مدير المبيعات بالتواصل معك بعد تقديم الطلب
+https://merchant.keeta-global.com/web/joinin
+
+----------------------------------------------------------
+
+((2) في حال رفض التاجر او طلب مساعدة من خدمة العملاء، يتم تصعيد الحالة)
+
+EN - Script
+thank you for your support of Keeta. Please provide the following information, and I will pass it on to our business manager, who will get in touch with you.
+Name of the restaurant
+Restaurant address
+Contact name and phone number
+
+AR - Script
+شكرًا لدعمك لمنصة كيتا. يُرجى توفير المعلومات التالية، وسأقوم بتمريرها إلى مدير الأعمال لدينا، الذي سيتواصل معك:
+اسم المطعم
+اسم الشخص المسؤول ورقم الهاتف
+عنوان المطعم
+
+----------------------------------------------------------
+
+(EscalationTemplate)
+Feedback time:
+Case ID:
+Store Name:
+Store Address:
+Store Contact Information:966-
+The Contact Name:
+Full Description :`,
+
+      "bd-noncomp": `(Keeservice (FAQ) = BD non-compliant behaviours)
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر للشكوى على مدير الاعمال الخاص به
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+((1) فهم المشكلة من التاجر وطلب دليل اذا توفر ثم يتم تصعيد المشكلة للقسم المختص  )  
+
+EN - Script
+I apologize for the inconvenience. I am here to help you, so please provide me with an explanation of the problem you are facing with your Business Manager, and kindly attach any screenshots or supporting evidence if available
+
+AR - Script
+أعتذر منك عن هذا الإزعاج . أنا هنا لمساعدتك، لذا أرجو منك تزويدي بشرح للمشكلة التي تواجهها مع مدير الأعمال الخاص بك، وإرفاق أي لقطات شاشة أو أدلة توضيحية إن توفرت
+
+----------------------------------------------------------
+
+((2) اعتذار وتهدئة التاجر انه سيتم رفع المشكلة والتحقق ومعاقبة مدير الاعمال)  
+
+EN - Script
+I'm sorry for the bad experience. Your feedback have been recorded and we attach great importance to it. We will verify it as soon as possible, and if it is true, we will punish the business manager accordingly. In order to avoid such problems from happening again, we will also increase the monitoring of business managers to improve service quality, and hope that you will continue to supervise. Thank you for your support and understanding
+
+AR - Script
+أعتذر عن التجربة السيئة اللي مرّيت فيها. ملاحظاتك تم تسجيلها ونحن نوليها أهمية كبيرة. راح نتحقق منها بأسرع وقت، وإذا كانت صحيحة، راح يتم معاقبة مدير الأعمال حسب الإجراءات المتبعة. عشان نتجنب حدوث مثل هالمشاكل مرة ثانية، رح نزود المراقبة على مدراء الأعمال لتحسين جودة الخدمة، ونأمل إنك تواصل متابعة الموضوع معنا. شكراً لدعمك وتفهمك
+
+----------------------------------------------------------
+
+((3) نفس السكريبت بصيغه مختلفة لاظهار التعاطف  )
+
+EN - Script
+First of all, I’m really sorry for the experience you’ve had, and I completely understand the frustration you must be feeling. Your feedback has been received, and we take it very seriously. We are currently looking into the issue as quickly as possible, and if it's confirmed, we will take the necessary steps with the business manager following our procedures. To prevent similar issues in the future, we’ll be increasing the monitoring of business managers and working on improving our service overall. I really appreciate your patience and cooperation with us. If you need anything else or want to follow up, I’m always here to help. Thanks again for your understanding and continued support!
+
+AR - Script
+أول شي، أنا متأسف جداً عالتجربة اللي مرّيت فيها، وأقدر تماماً الإحباط اللي حسيت فيه. ملاحظتك وصلت إلينا، وحطيناها ضمن أولوياتنا. حاليّاً، عم نتحقق من الموضوع بأسرع وقت، وإذا كان الكلام صحيح، رح نتخذ الإجراءات اللازمة مع مدير الأعمال حسب القوانين اللي عندنا. ولحتى نتجنب تكرار هالمشاكل مستقبلاً، رح نزود المراقبة على مدراء الأعمال ونشتغل على تحسين الخدمة بشكل عام. أنا متفهم تماماً وكتير نقدر صبرك وتعاونك معنا. إذا في شي تاني حابب تستفسر عنه أو تتابع الموضوع، أنا هون دائماً لأساعدك. شكراً كتير لتفهمك ودعمك المستمر!
+
+----------------------------------------------------------
+
+(EscalationTemplate)
+Feedback time:
+Case ID:
+Store ID:
+Store Name:
+Store Address:
+Store Contact Information:966-
+The brand manager:
+Full Description :`,
+
+      "food-large": `(Keeta Service (FAQ) = Food too large/heavy)
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر لأن الطلب يحتوي على كمية كبيرة من الأكياس أو الطلب حساس ، مما يجعل السائق يواجه صعوبة في اكمال عملية التوصيل 
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+( (1) الاتصال بالسائق مرة واحدة فقط للتاكد اذا ما كان بامكانه اكمال التوصيل )
+
+EN – Call Script – For Courier  
+
+Hello, this is () from Keeta customer service. This call will be recorded for quality control and training purposes. Regarding order number 0000, we would like to check if you are able to proceed with and complete the delivery?
+
+AR – Call Script – For Courier
+
+مرحبًا، معك () من خدمة عملاء كيتا، وهذه المكالمة ستكون مسجلة لغايات ضبط الجودة والتدريب. بخصوص الطلب رقم 0000، حابّين نتأكد إذا بإمكانك متابعة وتنفيذ عملية التوصيل ؟
+
+----------------------------------------------------------
+
+( في حال نجاح الاتصال وموافقة المندوب — استمرار التوصيل )
+
+EN – Script – For Merchant
+
+Hello, the courier confirmed he can able to handle and complete the delivery. Thank you for your understanding
+
+AR – Script – For Merchant
+
+مرحبًا، أكد السائق أنه قادر على متابعة وإكمال عملية التوصيل بسلاسة . شكرًا لتفهمك
+
+----------------------------------------------------------
+
+
+(في حال نجاح الاتصال ورفض المندوب اكمال التوصيل — الطلب أقل من 5 أكياس تذكير السائق انه سيكون مسؤولا )
+
+EN – Call Script – For Courier  
+
+Since the order contains fewer than five packages, refusing the delivery will affect your order completion rate. If you cannot continue, customer service will cancel the task and the system will reassign the order to another courier
+
+AR – Call Script – For Courier  
+
+بما أن الطلب يحتوي على أقل من خمس أكياس، فإن رفضك لإكمال التوصيل سيؤثر على نسبة إكمال الطلبات لديك. إذا كنت غير قادر على المتابعة، ستقوم خدمة العملاء بإلغاء المهمة وسيقوم النظام بإعادة تعيين الطلب إلى مندوب آخر
+
+----------------------------------------------------------
+
+( في حال استمرار رفض المندوب لأكمال عملية التوصيل — ابلاغ التاجر انه سيتم تعيين سائق جديد  )
+
+EN – Script – For Merchant 
+
+The courier cannot complete the delivery. Keeta will transfer the order to another courier shortly. Please wait patiently
+
+AR – Script – For Merchant
+
+السائق غير قادر على إكمال التوصيل. ستقوم كيتا بتحويل الطلب إلى مندوب آخر خلال وقت قصير. نرجو منك الانتظار بصبر
+
+----------------------------------------------------------
+
+(في حال نجاح الاتصال ورفض المندوب اكمال التوصيل — الطلب اكثر من 5 أكياس)
+
+ ( لن توجد أي مسؤولية على السائق في هذه الحالة ويتم تحويل الطلب)
+
+EN – Call Script – For Courier
+
+Since the order contains many packages, we will transfer the order to another courier. You may continue delivering your other orders normally
+
+AR – Call Script – For Courier
+
+نظرًا لوجود عدد كبير من الأكياس، سنقوم بتحويل الطلب إلى سائق اخر. يمكنك متابعة توصيل باقي طلباتك بشكل طبيعي
+
+----------------------------------------------------------
+
+EN – Script – For Merchant
+
+The courier cannot complete the delivery due to the large number of packages. Keeta will assign a car courier to pick up the order. Please wait patiently
+
+AR – Script – For Merchant
+
+السائق غير قادر على إكمال التوصيل . ستقوم كيتا بتعيين سائق سيارة لاستلام الطلب. نرجو منك الانتظار بصبر
+
+----------------------------------------------------------
+
+((2)  في حال فشل الاتصال)
+
+(اذا كان السائق الذي تم تعيينه على الطلب يملك سيارة )
+(لا يتم اتخاذ أي إجراء إضافي)
+
+EN – Script – For Merchant
+
+Hello, the courier already has a car and will be able to complete the delivery. Please wait patiently
+
+AR – Script – For Merchant
+
+مرحبًا، السائق يملك سيارة بالفعل وسيتمكن من إكمال التوصيل. نرجو منك الانتظار بصبر
+
+----------------------------------------------------------
+
+(السائق الذي تم تعيينه على الطلب يملك دراجة )
+( يتم تحويل الطلب الى سائق يملك سيارة )
+
+EN – Script – For Merchant
+
+Hello, the courier is unreachable and cannot pick up the meal. Keeta has reassigned a car courier for you. Please wait patiently
+
+AR – Script – For Merchant
+
+مرحبًا، السائق غير متاح ولا يمكنه استلام الوجبة. لقد قامت كيتا بإعادة تعيين سائق سيارة لاستلام الطلب. نرجو منك الانتظار بصبر`,
+
+      "unable-charge": `(Keeservice (FAQ) = Hardware setting (POS/Printer))
+      
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر للأبلاغ عن ان جهاز نقاط البيع يواجه مشكلة بالشحن
+
+(خطوات الحل)
+
+------------
+
+((1) تزويد التاجر ببعض النصائح التي قد تساعده في حل المشكلة)
+EN - Script 
+
+I apologize for the inconvenience caused by the charging issue with your POS device, and I am here to support you until it is resolved. Please try the following steps:
+
+1- Remove the back cover of the POS device and re-install the battery
+
+2- Check if the battery temperature is too high. If it exceeds 60°C, it will not charge. Try keeping the device away from heat sources or place it in a cool area for 20-30 minutes before attempting to charge it again
+
+3- If the battery temperature is normal but it is still not charging, try using a different charging plug
+4- If the issue persists, please try restarting the device
+
+5- If none of the above steps work, it is recommended to replace the POS device with a new one, as the current device might be defective
+
+AR - Script
+
+أعتذر منك على الازعاج الذي تسببت به مشكلة شحن جهاز نقاط البيع الخاص بك
+، وأنا هنا لأدعمك حتى يتم حلها. أرجو منك تجربة الخطوات التالية:
+
+١- قم بإزالة الغطاء الخلفي لجهاز نقاط البيع وأعد تثبيت البطارية
+
+٢- تأكد إذا كانت درجة حرارة البطارية عالية جداً، وإذا كانت مرتفعة (60 درجة مئوية)، ما رح تقدر تشحنها. حاول تبعد الجهاز عن مصادر الحرارة أو خليه في مكان بارد لمدة 20-30 دقيقة قبل ما تحاول تشحنه
+
+٣- إذا ما كانت درجة حرارة البطارية مرتفعة، بس الشحن غير فعال، حاول تبدل قابس الشحن
+٤- إذا ما زبطت، جرب تعيد تشغيل الجهاز
+
+٥- إذا ما زبط معك كل شيء، يفضل تغير جهاز نقاط البيع بجهاز جديد ممكن يكون الجهاز معطل
+
+------------
+
+((2) اذا استمرت المشكلة يتم التصعيد الى فريق الصيانه )
+
+EN – Script
+
+Thank you for informing us. Since the issue is still ongoing, we will escalate it to the maintenance team so they can check it and take the necessary action. ensure your operations continue smoothly
+
+AR - Script
+
+شكرًا لإبلاغنا. بما أن المشكلة ما زالت مستمرة، سنقوم برفعها إلى فريق الصيانة لفحصها واتخاذ الإجراء اللازم، وذلك لضمان استمرار عملك بسلاسة دون أي تعطّل
+
+------------
+
+(EscalationTemplate)
+Feedback time:
+Case ID:
+Store Name:
+Store Address:
+Store Contact Information:966-
+The Contact Name:
+Full Description :`,
+
+      "paper-light": `(Keeservice (FAQ) = Hardware setting (POS/Printer))
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر للأبلاغ عن ان خط الفاتورة باهت او ان الخط متقطع
+
+(خطوات الحل)
+
+------------
+
+((1) اخبار التاجر ان يقوم بتركيب الاوراق بشكل صحيح     )
+
+EN - Script
+
+The general reason is that the paper is jammed, it is recommended to reinstall the print paper roll. Pay attention to align the "short side of the paper" with the "paper exit"
+
+AR - Script
+
+السبب العام هو أن الورق عالق، لذا يفضل إعادة تركيب بكرة ورق الطباعة. انتبه إنك تحاذي "الجانب القصير من الورق" مع "مخرج الورق"
+
+------------
+
+((2) اذا استمرت المشكلة يتم التصعيد الى فريق الصيانه )
+
+EN – Script  
+
+Thank you for informing us. Since the issue is still ongoing, we will escalate it to the maintenance team so they can check it and take the necessary action. ensure your operations continue smoothly
+
+AR - Script
+
+شكرًا لإبلاغنا. بما أن المشكلة ما زالت مستمرة، سنقوم برفعها إلى فريق الصيانة لفحصها واتخاذ الإجراء اللازم، وذلك لضمان استمرار عملك بسلاسة دون أي تعطّل
+
+------------
+
+(EscalationTemplate)
+
+Feedback time:
+Case ID:
+Store Name:
+Store Address:
+Store Contact Information:966-
+The Contact Name:
+Full Description :`,
+
+      "printer-not": `(Keeservice (FAQ) = Hardware setting (POS/Printer))
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر للأبلاغ عن ان جهاز نقاط البيع الخاص به لا يطبع الفواتير
+
+(خطوات الحل)
+
+------------
+
+((1) تزويد التاجر ببعض النصائح التي قد تساعده في حل المشكلة   ) 
+EN - Script 
+
+I apologize for the inconvenience caused by the by the printer issue , I am here to support you until it is resolved. Please try the following steps:
+
+1- Go to the Settings page and ensure the printer device is set to 'InnerPrinter'. If it is not connected, please tap on it to establish a connection
+
+2- If you are experiencing overlapping text or faint printing, try re-installing the paper roll. Make sure to align the 'short side of the paper' with the 'paper outlet' to ensure there is no paper jam
+
+3- After that, perform a 'Printer Test' from the settings page
+
+4- If the printer still does not work after these attempts, please let me know so I can escalate the matter to the maintenance team and arrange for a device replacement if necessary to ensure your business continues smoothly.
+
+AR - Script
+
+أعتذر منك بشدة على هذا الإزعاج الذي تسبب به توقف طابعة الفواتير ، وأنا هنا لأدعمك حتى يتم حلها. أرجو منك تجربة الخطوات التالية:
+
+1- يرجى الدخول إلى صفحة الإعدادات والتأكد من ضبط جهاز الطباعة على خيار "InnerPrinter"؛ وفي حال لم يكن متصلا، اضغط عليه لمحاولة إعادة الاتصال
+
+2- إذا كانت المشكلة في وضوح الطباعة أو تداخل النصوص، يرجى إعادة تركيب بكرة الورق مع الحرص على محاذاة "الجانب القصير من الورق" مع "مخرج الورق" بدقة للتأكد من عدم وجود أي ورق عالق
+
+3- بعد ذلك، قم بإجراء "اختبار الطابعة" من خلال صفحة الإعدادات للتأكد من فاعليتها
+
+4- في حال قمت بتجربة هذه الخطوات وما زالت الطابعة لا تعمل، أرجو منك إبلاغي فوراً لأقوم برفع الأمر لفريق الصيانة واستبدال الجهاز إذا لزم الأمر لضمان سير عملك دون تأخير
+
+------------
+
+((2-) اذا استمرت المشكلة يتم التصعيد الى فريق الصيانه )
+
+EN - Script 
+
+Thank you for informing us. Since the issue is still ongoing, we will escalate it to the maintenance team so they can check it and take the necessary action. ensure your operations continue smoothly
+
+AR - Script
+
+شكرًا لإبلاغنا. بما أن المشكلة ما زالت مستمرة، سنقوم برفعها إلى فريق الصيانة لفحصه واتخاذ الإجراء اللازم، وذلك لضمان استمرار عملك بسلاسة دون أي تعطّل
+
+------------
+
+(EscalationTemplate)
+Feedback time:
+Case ID:
+Store Name:
+Store Address:
+Store Contact Information:966-
+The Contact Name:
+Full Description :`,
+
+      "device-stuck": `(Keeservice (FAQ) = Hardware setting (POS/Printer))
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر للأبلاغ عن ان الجهاز عالق على شاشة معينه
+
+(خطوات الحل)
+
+------------
+
+((1) اخبار التاجر بأن يقوم باعادة تشغيل الجهاز    )
+EN - Script 
+
+I apologize for the inconvenience caused by the POS machine issue
+Please press and hold both the 'Volume Down' button and the 'Power' button simultaneously to force a restart of the device
+
+AR - Script
+
+أعتذر منك على هذا الإزعاج بسبب المشكلة في جهاز نقاط البيع
+أرجو منك الضغط مع الاستمرار على زر 'خفض الصوت' وزر 'التشغيل' في آن واحد معاً لإعادة تشغيل الجهاز
+
+------------
+
+((2-) اذا استمرت المشكلة يتم التصعيد الى فريق الصيانه )
+
+EN – Script  
+
+Thank you for informing us. Since the issue is still ongoing, we will escalate it to the maintenance team so they can check it and take the necessary action. ensure your operations continue smoothly
+
+AR - Script
+
+شكرًا لإبلاغنا. بما أن المشكلة ما زالت مستمرة، سنقوم برفعها إلى فريق الصيانة لفحصه واتخاذ الإجراء اللازم، وذلك لضمان استمرار عملك بسلاسة دون أي تعطّل
+
+------------
+
+(EscalationTemplate)
+Feedback time:
+Case ID:
+Store Name:
+Store Address:
+Store Contact Information:966-
+The Contact Name:
+Full Description :`,
+
+      "device-restart": `(Keeservice (FAQ) = Hardware setting (POS/Printer))
+شرح توضيحي للمشكلة
+
+يتواصل التاجر للأبلاغ بان جهاز نقاط يستمر باعادة التشغيل بشكل تلقائي 
+
+(خطوات الحل)
+
+------------
+
+((1) اخبار التاجر بأن يقوم باعادة تشغيل الجهاز)
+EN - Script 
+
+I apologize for the inconvenience caused by the POS machine issue
+Please press and hold both the 'Volume Down' button and the 'Power' button simultaneously to force a restart of the device
+
+AR - Script
+
+أعتذر منك على هذا الإزعاج بسبب مشكلة جهاز نقاط البيع
+أرجو منك الضغط مع الاستمرار على زر 'خفض الصوت' وزر 'التشغيل' في آن واحد معاً لإعادة تشغيل الجهاز
+
+------------
+
+((2-) اذا استمرت المشكلة يتم التصعيد الى فريق الصيانه )
+
+EN – Script  
+
+Thank you for informing us. Since the issue is still ongoing, we will escalate it to the maintenance team so they can check it and take the necessary action. ensure your operations continue smoothly
+
+AR - Script
+
+شكرًا لإبلاغنا. بما أن المشكلة ما زالت مستمرة، سنقوم برفعها إلى فريق الصيانة لفحصها واتخاذ الإجراء اللازم، وذلك لضمان استمرار عملك بسلاسة دون أي تعطّل
+
+------------
+
+(EscalationTemplate)
+Feedback time:
+Case ID:
+Store ID:
+Store Name:
+Store Address:
+Store Contact Information:966-
+The brand manager:
+Full Description :`,
+
+      "closed": `(Keeservice (FAQ) = Hardware setting (POS/Printer))
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر للأبلاغ بان حالة المطعم مغلقة او في وضع إستراحه على غير العاده
+
+(خطوات الحل)
+
+------------
+
+((1) اخبار التاجر بالاسباب الممكنه وكيفية اعادة تفعيل حالة المطعم )   
+EN - Script 
+
+I'm sincerely apologize for the inconvenience caused by the automatic closure of your store. I would like to clarify that this is an automated safety feature designed to ensure no orders are missed. The store automatically switches to (Rest) mode in two cases:
+
+First, if the POS device remains turned off for more than 10 minutes
+Second, if the device loses internet connection for more than 10 minutes
+
+To resolve this and prevent it from recurring, please ensure that your device stays powered on and connected to a stable internet network. You can also manually reopen your store at any time by going to the store settings and clicking the start button
+
+AR - Script
+
+أعتذر منك بشدة على الإزعاج الناتج عن إغلاق المتجر تلقائياً، وأود توضيح أن هذا الإجراء يتم برمجياً كخاصية حماية لضمان عدم ضياع الطلبات, حيث يتحول المتجر تلقائياً إلى وضع (الاستراحة) في حالتين:
+
+الأولى عند بقاء جهاز نقاط البيع مغلقاً لأكثر من 10 دقائق
+والثانية في حال فقدان الجهاز للاتصال بشبكة الإنترنت لمدة تتجاوز 10 دقائق
+
+ولحل هذه المشكلة وتفادي تكرارها، أرجو منك التأكد دائماً من بقاء جهازك قيد التشغيل ومن اتصاله بشبكة إنترنت مستقرة، كما يمكنك إعادة فتح المتجر يدوياً في أي وقت من خلال الدخول إلى الإعدادات الخاصة بالمتجر والضغط على زر بدء التشغيل`,
+
+      "commission-issues": `(Keeservice (FAQ) =  Billing issues)
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر للابلاغ عن خطا في حسابات الفواتير والنسب ويطلب مساعدة وتوضيح
+
+(خطوات الحل)
+
+((1) تصعيد المشكلة واخبار التاجر انه سيتم التواصل معه خلال 48 ساعة)
+ EN - Script 
+
+I have recorded your problem in detail and will assist you in feeding it back to the Business Manager (BD), who will contact you within 1-2 working days
+
+AR - Script
+
+لقد قمت بتوثيق مشكلتك بالتفصيل وسأساعدك في رفعها إلى مدير الأعمال ، وسيتواصل معك خلال 1–2 يومي عمل
+
+----------------------------------------------------------
+
+(EscalationTemplate)
+
+Feedback time:
+Case ID:
+Store ID:
+Store Name:
+Store Address:
+Store Contact Information:966-
+The brand manager:
+Full Description :`,
+
+      "no-couriers": `(Keeservice (FAQ) = No couriers accept the order)
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر بسبب انه لم يتم تعيين سائق على الطلب    
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+((1) التحقق من المدة بين وقت انشاء الطلب و الوقت الحالي)
+
+----------------------------------------------------------
+
+(اقل من 10 دقائق = تهدئة التاجر ونصحه بالصبر)
+
+EN - Script
+
+Order peak hours, weather, road conditions and other factors can all affect the acceptance of orders. Riders usually accept orders within 10 minutes after customer place the order. Please wait patiently
+
+AR - Script
+
+ساعات الذروة، حالة الطقس، وظروف الطرق كلها عوامل ممكن تأثر على قبول الطلبات. عادةً، المندوبين يقبلون الطلب خلال 10 دقائق من وقت تأكيده. ياريت تنتظر بصبر
+
+----------------------------------------------------------
+
+(اكثر من 10 دقائق =  إخبار التاجر أنه سيتم محاولة تعيين سائق يدويا)
+
+EN - Script
+
+Order peak hours, weather, road conditions and other factors can all affect the acceptance of orders. If you have been waiting for a long time, I will immediately try to dispatch a rider to accept the order
+
+AR - Script
+
+ساعات الذروة، حالة الطقس، وظروف الطرق ممكن تأثر على قبول الطلبات. إذا كنت منتظر وقت طويل، راح أحاول فورًا أوفّر لك مندوب يستلم الطلب
+
+----------------------------------------------------------
+
+(نجح تعيين السائق)
+
+EN - Script
+
+We have found a rider for you, and the rider will go to the restaurant to pick up the food as soon as possible. You can check the rider's location through the order page. Please wait patiently
+
+AR - Script
+
+لقينا لك مندوب، وبيوصل للمطعم ليأخذ الطلب بأسرع وقت. تقدر تتابع موقعه من صفحة الطلب. ياليت تنتظر بكل صبر!
+
+----------------------------------------------------------
+
+(فشل تعيين السائق)
+
+EN - Script
+
+I'm very sorry, due to the impact of peak dining hours/bad weather... there is a shortage of riders, there is no rider to take the order at present, I will cancel the order, and the platform will bear the meal loss
+
+AR - Script
+
+أعتذر لك جدًا، بسبب زحمة أوقات الذروة/سوء الأحوال الجوية... فيه نقص في المندوبين، وما فيه مندوب متوفر حاليًا لاستلام الطلب. راح أُلغي الطلب، والمنصة بتتحمّل تكلفة الوجبة. شكرًا لتفهمك!
+
+----------------------------------------------------------
+
+Refund+ 5 SAR compensation (voucher) 
+Responsibility platform
+Refund reason - No delivery person accepting the order
+Compensation reason - No courier accepting the order`,
+
+      "phone": `(Keeservice (FAQ) = Restaurant information modification)
+      
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر يريد تغيير رقم الهاتف الخاص به 
+
+(خطوات الحل)
+
+----------------- 
+
+((1) إخبار التاجر بخطوات اعادة تعيين رقم الهاتف - من تطبيق الهاتف والحاسوب فقط )
+
+ EN - Script 
+ 
+To change the phone number linked to your store, please log in to the Merchant Backend via the app or your computer. Once logged in, go to Opening Settings, then select Restaurant Information. From there, you can access the phone number field to edit and update it
+
+AR - Script
+
+لتغيير رقم الهاتف المرتبط بمتجرك، يرجى تسجيل الدخول إلى واجهة التاجر سواء عبر التطبيق أو جهاز الحاسوب. بعد الدخول، انتقل إلى إعدادات الافتتاح، ثم اختر معلومات المطعم، ومن هناك يمكنك الوصول إلى خانة رقم الهاتف لتعديله وتحديثه`,
+
+      "open-hours": `(Keeservice (FAQ) = Restaurant information modification)
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر يريد تعديل اوقات العمل  
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+((1) إخبار التاجر بخطوات اعادة تعيين رقم الهاتف - من الهاتف والحاسوب فقط )
+
+ EN - Script 
+ 
+To adjust your operating hours, please log in to the merchant backend via your computer, navigate to Operation Settings, select Restaurant Info, and then go to Open Hours Setting
+Please note that operational hours may need to be adjusted during special holidays, such as Ramadan. For these occasions, please refer to the detailed instructions for setting up special operational hours to ensure your schedule is accurate 
+
+AR - Script
+
+لتعديل أوقات العمل الخاصة بمتجرك، يرجى تسجيل الدخول إلى الواجهة الخلفية عبر جهاز الحاسوب، ثم الانتقال إلى إعدادات العمليات واختيار معلومات المطعم، ومنها يمكنك الدخول إلى إعدادات ساعات العمل لإجراء التعديلات المطلوبة 
+كما يرجى ملاحظة أن ساعات العمل قد تتطلب ضبطاً خاصاً خلال المناسبات والأعياد الرسمية (مثل شهر رمضان المبارك)، لذا يرجى مراجعة التعليمات التفصيلية الخاصة بإعدادات ساعات العمل للمناسبات الخاصة لضمان دقة مواعيدك `,
+
+      "min-order": `(Keeservice (FAQ) = Restaurant information modification)
+      
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر يريد تعديل الحد الأدنى لقيمة الطلب
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+((1) اخبر التاجر بخطوات تعديل الحد الأدنى لقيمة الطلب - من الحاسوب والتطبيق فقط)
+
+ EN - Script 
+ 
+to modify the Minimum Order Value, please log in to the merchant backend via the app or your computer. Navigate to Opening Settings, then select Restaurant Info. From there, you can locate and update the Minimum Order Value field 
+
+AR - Script
+
+لتعديل الحد الأدنى لقيمة الطلب، يمكنك القيام بذلك بسهولة عبر تطبيق التاجر أو من خلال جهاز الحاسوب. يرجى تسجيل الدخول إلى الواجهة الخلفية للمتجر، ثم الانتقال إلى إعدادات الافتتاح، واختيار معلومات المطعم، ومن هناك ستجد خيار الحد الأدنى لقيمة الطلب حيث يمكنك تحديث القيمة المطلوبة `,
+
+      "prep-time": `(Keeservice (FAQ) = Restaurant information modification)
+      
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر يريد تعديل وقت تحضير الطلبات
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+((1) اخبار التاجر بخطوات تعديل وقت تحضير الطلبات - من الحاسوب والتطبيق فقط)
+
+ EN - Script 
+To adjust the Order Preparation Time, please log in to the merchant backend via the app or your computer. Navigate to Opening Settings, then select Restaurant Info. From there, you can update the Order Preparation Time to suit your operational needs 
+
+AR - Script
+لتعديل وقت تحضير الطلبات، يمكنك القيام بذلك عبر تطبيق التاجر أو من خلال جهاز الحاسوب. يرجى تسجيل الدخول إلى الواجهة الخلفية للمتجر، ثم الانتقال إلى إعدادات الافتتاح، واختيار معلومات المطعم، ومن هناك يمكنك تحديث وقت تحضير الطلبات بما يتناسب مع نظام العمل لديك `,
+
+      "store-name": `(Keeservice (FAQ) = Restaurant information modification)
+      
+(شرح توضيحي للمشكلة)
+
+ يتواصل التاجر يريد تعديل الإسم أو الفئة أو العنوان الخاص بالمتجر 
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+((1) اخبار التاجر انه حاليا التاجر لا يملك صلاحية التعديل بشكل مباشر وتصعيد المشكلة)
+
+ EN - Script 
+ 
+Currently the merchant does not have the authority to edit To edit this information manually. We will contact your Business Manager to assist you in making the required changes
+We appreciate your understanding 
+
+AR - Script
+
+حاليًا التاجر لا يمتلك صلاحية تعديل معلومات المتجر. سنقوم بالتواصل مع مدير أعمالك  لمساعدتك في تنفيذ التعديلات المطلوبة
+نقدر تفهّمك ونتطلع إلى خدمتك دائمًا 
+
+----------------------------------------------------------
+ 
+(EscalationTemplate)
+Feedback time: 
+Case ID:
+Store ID: 
+Store Name:
+Store Address: 
+Store Contact Information:966-
+The brand manager: 
+Full Description :`,
+
+      "header-image": `(Keeservice (FAQ) = Restaurant information modification)
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر يريد تغيير صورة الواجهة
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+((1) اخبر التاجر بخطوات تغيير صورة الواجهة - من الهاتف والحاسوب فقط)
+
+ EN - Script 
+
+to update your store's header image, please log in to the merchant backend via the app or computer. Navigate to Opening Settings, then select Restaurant Info. From there, you will find the Header Image option, where you can upload and update your new photo 
+
+AR - Script
+
+لتحديث صورة المتجر الخاصة بك، يمكنك القيام بذلك عبر تطبيق التاجر أو من خلال جهاز الحاسوب. يرجى تسجيل الدخول إلى الواجهة الخلفية للمتجر، ثم الانتقال إلى إعدادات الافتتاح، واختيار معلومات المطعم، ومن هناك ستجد خيار صورة الواجهة حيث يمكنك رفع الصورة الجديدة وتحديثها`,
+
+      "invoice": `(Keeservice (FAQ) = Request bills)
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر يطلب الحصول على الفواتير الخاصة بالمبالغ الأسبوعية التي تم تسويتها بالفعل إلى حسابه البنكي 
+
+(خطوات الحل)
+
+---------------------------------------------------------- 
+
+((1) اخبار التاجر بخطوات تحميل فواتير المبالغ التي تم تسويتها بالفعل إلى حسابه البنكي - من خلال الحاسوب فقط)
+
+ EN - Script 
+
+To get your bills, please log in to the merchant backend via computer. Navigate to Financial Management, then select Invoice. You will see a list of settled bills; next to each one, there are two download buttons : The first one is )Invoice) It contains a summary of settled amounts and fees and the second one is (Order Summary) It contains a detailed report for each order
+Plese Note: these bills appear only after payment is confirmed to your bank card
+
+AR - Script
+
+للحصول على فواتيرك، يُرجى تسجيل الدخول إلى واجهة المطعم الخلفية عبر الكمبيوتر. اذهب إلى إدارة المالية، ثم اختر الفواتير. سترى قائمة بالفواتير المدفوعة؛ بجانب كل واحدة، هناك زران للتنزيل: الأول هو (الفاتورة) ويحتوي على ملخص للمبالغ المدفوعة والرسوم، والثاني هو (ملخص الطلب) ويحتوي على تقرير مفصل لكل طلب
+ ملاحظة : هذه الفواتير تظهر فقط بعد تأكيد الدفع إلى بطاقة البنك الخاصة بك 
+
+---------------------------------------------------------- 
+
+((2) في حال عدم معرفة التاجر بالطريقة أو إصراره على إرسالها له)
+
+ EN - Script 
+
+We are here to help; we will assist you in contacting the Business Manager (BD) in charge of your store to provide your needs. The matter will be followed up, and you will receive a response within 48 hours
+
+AR - Script
+
+نحن هنا لمساعدتك وسنقوم بمساعدتك في التواصل مع مدير الأعمال المسؤول عن متجرك لتوفير احتياجاتك، وسيتم متابعة الأمر والرد عليك خلال 48 ساعة 
+
+---------------------------------------------------------- 
+
+(EscalationTemplate)
+Feedback time: 
+Case ID: 
+Store ID: 
+Store Name: 
+Store Address: 
+Store Contact Information:966-
+The brand manager: 
+Full Description :`,
+
+      "download-zone": `(Keeservice (FAQ) = Request bills)
+
+(شرح توضيحي للمشكلة)  
+
+ يتواصل التاجر يطلب الحصول على كشف حساب عام لمتجره أو فاتورة شاملة لفترة معينة
+
+(خطوات الحل)
+
+-------------------------------------------------------------------------------
+
+((1) اخبار التاجر بخطوات تحميل الفواتير - من خلال الحاسوب فقط)
+
+EN - Script
+
+To get your bill, please log in to the merchant PC backend, enter the [Financial Management] section → [Download Zone]. After selecting the Restaurant Information and Billing Date (up to a maximum of 31 days), click the "Download Bill" button. The system will then generate a bill, and the merchant can click the "Download" button on the right side of the bill to download it 
+
+AR - Script
+
+يمكنك الحصول على فاتورتك بكل سهولة من خلال تسجيل الدخول إلى لوحة تحكم التاجر عبر الحاسوب، ثم الدخول إلى قسم [الإدارة المالية] ومنه اختر [منطقة التحميل]. بعد ذلك، قم بتحديد معلومات المطعم وتاريخ الفاتورة المطلوب (بشرط ألا تتجاوز المدة 31 يوماً)، ثم اضغط على زر "تحميل الفاتورة". سيقوم النظام بإنشاء الفاتورة فوراً، ويمكنك الضغط على زر "تحميل" الموجود في جهة اليمين لحفظها على جهازك
+
+-----------------------------------------------------------------------
+
+((2) في حال عدم معرفة التاجر بالطريقة أو إصراره على إرسالها له)
+
+EN - Script
+
+We are here to help; we will assist you in contacting the Business Manager (BD) in charge of your store to provide your needs. The matter will be followed up, and you will receive a response within 48 hours
+
+AR - Script
+
+نحن هنا لمساعدتك وسنقوم بمساعدتك في التواصل مع مدير الأعمال المسؤول عن متجرك لتوفير احتياجاتك، وسيتم متابعة الأمر والرد عليك خلال 48 ساعة
+
+-----------------------------------------------------------------------
+
+(EscalationTemplate)
+Feedback time:
+Case ID:
+Store ID:
+Store Name:
+Store Address:
+Store Contact Information:966-
+The brand manager:
+Full Description :`,
+
+      "refund-result": `(Keeservice (FAQ) =  Inquiry about order refund result)
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر للاستفسار عن سبب استرداد الطلب من قبل خدمه العملاء
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+(تزويد التاجر بسبب استرداد الطلب)
+
+----------------------------------------------------------
+
+( اذا كانت المسؤولية على التاجر)
+
+EN - Script
+
+For the order you're asking about, the refund reason is: (). The responsible party is the merchant If you disagree with the customer service resolution, you can submit an appeal for food loss through the Keeta Partner app/PC.
+
+AR - Script
+
+بالنسبة للطلب الذي تسأل عنه، سبب الاسترجاع هو: (). الجهة المسؤولة هي التاجر إذا كنت غير موافق على قرار خدمة العملاء، يمكنك تقديم اعتراض بشأن خسارة الطعام عبر تطبيق شركاء كيتا أو من خلال الكمبيوتر الشخصي
+
+----------------------------------------------------------
+
+(اذا كانت المسؤولية على التاجر وكان غير موافق على قرار خدمه العملاء)
+
+EN - Script
+If you disagree with refund decision, you can appeal for meal loss via the Keeta partner app/PC within 7 days.Click "Appeal" under the order's "Refund Information" to file; Each order can be appealed only once
+
+AR - Script
+إذا كنت غير موافق على قرار الاسترجاع، يمكنك تقديم اعتراض على خسارة الوجبة عبر تطبيق شركاء كيتا أو من خلال الكمبيوتر الشخصي خلال 7 أيام اضغط على "اعتراض" تحت "معلومات الاسترجاع" في الطلب لتقديم الاعتراض؛ يمكن تقديم الاعتراض لكل طلب مرة واحدة فقط
+
+----------------------------------------------------------
+
+( اذا لم تكن المسؤولية على التاجر)
+
+EN - Script
+For the order you're asking about, the refund reason is: (). The responsible party is: () Please note: there is no compensation for food loss(it has already been compensated)
+
+AR - Script
+بالنسبة للطلب الذي تسأل عنه، سبب الاسترجاع هو: (). الجهة المسؤولة هي: () يرجى ملاحظة: لا يوجد تعويض لخسارة الطعام (تم تعويضها بالفعل)
+
+----------------------------------------------------------
+
+(اذا كان التاجر يحتاج معلومات اكثر عن سبب الالغاء )
+( يتم الدخول الى المحادثة الخاصة بالعميل او السائق الذي قام بالغاء الطلب وتزويد التاجر بالسبب الدقيق لالغاء الطلب )
+
+EN - Script
+We deeply apologize for the order cancellation and fully understand the inconvenience this may cause to you After verification, it was found that the () contacted us to report that () and After review, the appeal was accepted and the order was refunded accordingly
+
+
+AR - Script
+نعتذر منك بشدة عن إلغاء الطلب ونقدر تماماً مدى الإزعاج الذي قد يسببه هذا الأمر بعد التحقق تبين ان () تواصل للابلاغ عن مشكلة () وبعد المراجعة تم استرداد الطلب بناء على ذلك`,
+
+      "refund-status": `(Keeservice (FAQ) = Inquiry about order refund status)
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر يسال عن حاله الطلب لان العميل طلب استرداد مباشر من التاجر ويسال ما الذي يجب ان يفعله 
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+(User application )
+
+( هذه الرسالة تظهر عندما يقوم العميل بطلب استرداد مباشر من التاجر )
+
+----------------------------------------------------------
+
+(اذا كان التاجر قد قام بتحضير الطلب بالفعل فيحق له رفض الاسترداد)
+
+EN - Script
+If the merchant has already served the meal, you have the right to refuse the customer's refund request to avoid losses
+
+AR - Script
+إذا كان التاجر قد جهّز الطلب بالفعل، فلك الحق في رفض طلب استرداد المبلغ من العميل لتجنب أي خسائر
+
+----------------------------------------------------------
+
+(اذا كان سبب الاسترداد غير مطابق لما حدث فعليا يحق له رفض الاسترداد  )
+
+EN - Script
+If a customer's reason for a refund doesn't match what happened, you can reject their refund request and provide a reason for the rejection
+But before rejection,  we advise you to talk with the customer effectively to prevent any future disputes
+Make sure to handle it within the time limit shown in the Keeta POS/Keeta Partner app/PC
+
+AR - Script
+إذا كان سبب استرداد العميل غير مطابق لما حدث فعليًا، يمكنك رفض طلب الاسترداد مع توضيح سبب الرفض
+لكن قبل الرفض، ننصحك بالتواصل مع العميل بشكل فعّال لتفادي أي خلافات مستقبلية
+تأكد من معالجة الطلب خلال المهلة المحددة في تطبيق شركاء كيتا أو عبر الكمبيوتر
+
+----------------------------------------------------------
+
+(User cancel application)
+
+(هذه الرسالة تظهر عندما يقوم العميل بسحب طلبه لاسترداد الطلب ويريد استمراره  )
+
+EN - Script
+I deeply apologize for any confusion regarding this order. I would like to clarify that the customer had submitted a refund request but changed their mind and withdrew it, as they wish to complete the order. Accordingly, the order remains active in the system, and I advise you to continue preparing the order as usual to ensure it reaches the customer in the best condition
+
+AR - Script
+بعتذر منك جداً على أي إرباك صار بخصوص هذا الطلب , حابب أوضح لك إن العميل كان قد رفع طلب استرداد لكنه غير رأيه وقام بسحب الطلب لرغبته في إكماله , وبناءً على ذلك فإن الطلب لا يزال فعالاً بشكل طبيعي في النظام وبنصحك بالاستمرار في تحضير الطلب وتجهيزه كالمعتاد لضمان وصوله للعميل بأفضل صورة
+
+----------------------------------------------------------
+
+(Merchant agrees)
+(تظهر هذه الرسالة عندما يقوم العميل بطلب استرداد مباشر من التاجر ويقوم التاجر بقبوله )
+
+EN - Script
+
+After verification, it was found that the customer submitted a direct refund request to your merchant, and it was approved by you. Based on your acceptance of this request, the amount was refunded to the customer accordingly
+
+AR - Script
+بعد التحقق تبين ان العميل قام بارسال طلب استرداد مباشر الى متجركم وتمت الموافقة عليه من قبلكم , وبناءً على قبولكم لهذا الطلب تم استرداد المبلغ للعميل بشكل طبيعي
+
+----------------------------------------------------------
+
+(Merchant refuses)
+
+(تظهر هذه الرسالة عندما يقوم العميل بطلب استرداد مباشر من التاجر ويقوم التاجر برفضه )
+
+EN - Script
+Regarding the refund request you received, since your merchant refuses the refund request, this means the order is still active and proceeding normally. You can now continue preparing the order as usual to ensure it reaches the customer in the best condition
+
+
+AR - Script
+ بخصوص طلب الاسترداد اللي وصلك , بما إنك قمت برفض طلب الاسترداد من طرفك، فهذا يعني أن الطلب لا يزال فعالاً ويعمل بشكل طبيعي تماماً , بإمكانك الآن الاستمرار في تحضير الطلب وتجهيزه كالمعتاد لضمان وصوله للعميل في أفضل حال `,
+
+      "auto-refund": `(Keeservice (FAQ) =  Inquiry about automatic refunds by Keeta)
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر بسبب ان الطلب تم استرداده ويتبين ان الاسترداد كان اوتوماتيكي من النظام 
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+(Automatic refund successfully)
+
+( هذه الرسالة تظهر عندما يقوم العميل بطلب استرداد مباشر من التاجر ولا يقوم التاجر بمعالجة الطلب في الوقت المحدد مما يؤدى الى استرداد الطلب بشكل اوتوماتيكي من النظام  )
+
+----------------------------------------------------------
+
+(الوقت المخصص للمراجعة 15 دقيقة )
+
+----------------------------------------------------------
+
+(تزويد التاجر بسياسة الاسترداد الاوتوماتيكي )
+
+EN - Script
+
+Once the merchant accepts the order, if the user requests a refund, it will be sent for the merchant's review. The merchant must complete this review within the specified timeframe. If there is no response in that time, the system will automatically help the user cancel the order or issue a partial refund. The merchant is responsible for this, and there is no compensation for food loss
+
+AR - Script
+
+بمجرد قبول المطعم للطلب، إذا اطلب العميل استرجاع أمواله، يتم إرسال الطلب للمطعم للمراجعة. يجب على المطعم ان يكمل المراجعة في الوقت المحدد. إذا لم يرد المطعم خلال هذا الوقت، سيقوم النظام بشكل تلقائي بمساعدة العميل في إلغاء الطلب أو إصدار استرجاع جزئي. المطعم سيكون مسؤول عن هذا، ولن يكون هناك أي تعويض عن خسارة الأكل
+
+----------------------------------------------------------
+
+(السكريبت بصيغة اخرى ابسط   )
+
+EN - Script
+I deeply apologize for any inconvenience regarding this order. I would like to clarify that the customer submitted a refund request directly to your merchant for review and decision-making, rather than through the keeta platform. Due to the lack of response and the expiration of the specified review time, the system automatically assisted the customer and approved the refund. In this case, the merchant is held responsible for the order
+
+
+AR - Script
+بعتذر منك جداً على أي ازعاج بخصوص هذا الطلب , وحابب أوضحلك إن العميل قام بإرسال طلب استرداد الطلب مباشرة لحضرتك للمراجعة واتخاذ قرار بشأنه وليس عبر المنصة , وبسبب عدم الرد وانتهاء الوقت المحدد للمراجعة قام النظام تلقائياً بمساعدة العميل والموافقة على الاسترداد 
+
+----------------------------------------------------------
+
+(في حالة كان الوقت بين طلب استرداد العميل والموافقة عليه اوتوماتيكا اقل من 15 دقيقة )
+(يتم توجيه التاجر لرفع اعتراض على الأسترداد)
+
+EN - Script
+I apologize for any inconvenience this situation has caused you. I would like to clarify that you can now submit an appeal through the order details. I advise you to explain the issue clearly and attach the available evidence, so the specialized team can review and audit the case with full transparency to reach a fair decision
+
+AR - Script
+بعتذر من حضرتك على أي إزعاج سببه لك هذا الموقف , حابب أوضح لك إنه بإمكانك الآن رفع طلب اعتراض من خلال تفاصيل الطلب وانصحك بشرح المشكلة بشكل واضح وارفاق الادلة المتوفرة ,  ليتسنى للفريق المختص مراجعة الحالة والتدقيق فيها بكل شفافية لاتخاذ قرار عادل`,
+
+
+
+      "unsatisfied": `(Keeservice (FAQ) =Unsatisfied with dispute result/policies)
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر بسبب رفض الاعتراض الذي قام به 
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+(تزويد التاجر بسبب رفض الاعتراض )
+
+EN - Script
+I completely understand your position regarding the rejection of your appeal, and I would like to inform you that the reason is (). I deeply apologize for the inconvenience caused by this rejection
+
+AR - Script
+أتفهم موقفك تماماً بخصوص رفض اعتراضك، وأود إفادتك بأن السبب هو () , أعتذر منك جداً على  الأزعاج الذي سببه هذه الرفض 
+
+----------------------------------------------------------
+
+(اذا بادر التاجر بارسال ادلة أضافية او طلب مراجعة الطلب مرة اخرى يتم طلب ادلة اضافية بخصوص المشكلة)
+(من شروط الادلة ان تكون صالحة لمراجعة المشكلة بدقة وتتضمن الفاتورة )
+
+EN - Script
+Could you Please provide me with a clear evidence, including the order invoice, to be reviewed once again
+
+AR - Script
+ممكن لو سمحت تزويدي بأدلة إضافية واضحه وتتضمن الفاتورة الخاصة بالطلب لمراجعة الطلب مرة أخرى
+
+----------------------------------------------------------
+
+(اذا لم تكن الأدلة واضحه )
+
+EN - Script
+I completely understand your position , I would like to inform you that, unfortunately, the evidence you provided is not clear enough. I deeply apologize for this
+
+AR - Script
+أتفهم موقفك تماماً، وأود إفادتك بأنه للأسف الأدلة التي زودتني بها غير واضحة بالشكل الكافي، أعتذر منك جداً 
+
+----------------------------------------------------------
+
+(اذا كانت الأدلة واضحه)
+
+EN - Script
+Since the evidence you provided is clear and sufficient, you will be compensated for the food loss. The amount will be settled and added normally during the next weekly financial cycle. I deeply apologize for any inconvenience this issue has caused to you
+
+AR - Script
+بما أن الأدلة التي قدمتها واضحة وكافية، سيتم تعويضك عن خسارة الوجبة. وسيتم تسوية المبلغ المستحق وإضافته بشكل طبيعي خلال الدورة المالية الأسبوعية القادمة، أعتذر منك جداً على أي إزعاج تسببت به المشكلة لك 
+
+----------------------------------------------------------
+
+(اذا كانت الأدلة واضحه والأسترداد كان على الطلب كاملا يتم تعويض التاجر من خلال )
+Merchant Dispute - Inclusive
+
+(اذا كانت الأدلة واضحه والأسترداد كان جزئيا على الطلب يتم أسترداد قيمه الأصناف التي تم استردادها من خلال  )
+Merchant Compensation  - Inclusive `,
+
+      "pickup-slow": `(Keeservice (FAQ) = Courier pick-up is too slow )
+
+
+(شرح توضيحي للمشكلة)
+يتواصل التاجر بسبب ان السائق متأخر على استلام الطلب  
+(خطوات الحل)
+
+----------------------------------------------------------
+
+(التواصل مع السائق للتحقق من المشكلة )
+
+----------------------------------------------------------
+
+(اذا نجح الاتصال )
+
+EN – Call Script – For Courier
+
+Hello, this is () from keeta customer service. This call will be recorded for quality and training purposes. Regarding order number (000), the merchant informed me that you are late for pickup. Are you currently able to complete the delivery? And how much time do you need to arrive?
+
+AR – Call Script – For Courier
+
+مرحبًا، معك () من خدمة عملاء كيتا، وهذه المكالمة ستكون مسجلة لغايات ضبط الجودة والتدريب. بخصوص الطلب رقم (0000) أفادني المطعم بأنك متأخر في الاستلام. هل تستطيع إكمال عملية التوصيل حالياً؟ وكم هي المدة التي تحتاجها بالضبط للوصول؟ 
+
+----------------------------------------------------------
+
+(اذا كان السائق قادر على اكمال التوصيل )
+(يتم اخبار التاجر بالمدة التي يحتاجها السائق للوصول )
+
+EN – Chat Script – For Merchant 
+
+Hello, the courier is on the way to pick up the food and will arrive at the restaurant within () time. Please be patient
+
+AR - Chat Script – For Merchant 
+
+مرحباً، السائق في الطريق لاستلام الطلب وسيصل إلى المطعم خلال () دقائق. نرجو منك التحلي بالصبر
+
+----------------------------------------------------------
+
+(اذا كان السائق غير قادر على اكمال التوصيل )
+(ابلاغ السائق ان يقوم بالابلاغ داخل التطبيق الخاص به لتحويل الطلب وابلغ التاجر بالمشكلة وان السائق سيقوم بتحويل الطلب  )
+
+
+EN – Call Script – For Courier
+
+If you can't continue delivering the order due to (), you can report this issue in the Keeta Rider app, and the system will transfer the order task
+
+
+AR - Chat Script – For Courier  
+
+مرحباً، معك خدمة عملاء كيتا. إذا كنت غير قادر على متابعة توصيل الطلب بسبب ()، يمكنك الإبلاغ عن المشكلة من خلال تطبيق كيتا للسائقين ، وسيقوم النظام بنقل مهمة الطلب
+
+
+EN – Chat Script – For Merchant
+
+ apologize to you, but the courier currently cannot proceed with the delivery. The delivery task will be reassigned to a new courier to complete it 
+
+AR - Chat Script – For Merchant 
+
+اعتذر من حضرتك ولكن السائق حاليا لا يمكنه متابعة التوصيل , وسيتم تحويل مهمة التوصيل الى سائق جديد لاكمالها 
+
+----------------------------------------------------------
+
+(اذا فشل الأتصال )
+(يتم مقارنة الوقت بين قبول السائق للتوصيل والوقت الفعلي  )
+
+----------------------------------------------------------
+
+(اذا كان الوقت اكثر من 15 دقيقة يتم تحويل الطلب الى سائق جديد)
+
+EN – Chat Script – For Merchant
+
+the courier is unreachable/ cannot pick up the meal. Keeta has re-assigned another courier for you, please wait patiently
+If the customer cancels the order due to the courier's picking up the meal, the merchant can appeal online, and Keeta will cover the meal loss
+
+AR - Chat Script – For Merchant 
+
+لسائق غير متاح/لا يمكنه استلام الوجبة. لقد قامت كيتا بإعادة تعيين مندوب آخر لك، يرجى الانتظار بصبر.
+إذا قام العميل بإلغاء الطلب بسبب مشكلة استلام الوجبة من السائق، يمكن للمتجر تقديم اعتراض عبر الإنترنت، وستقوم كيتا بتغطية خسارة الوجبة
+
+----------------------------------------------------------
+
+(اذا كان الوقت أقل من 15 دقيقة يتم تهدئه التاجر ونصحه بالصبر )
+
+EN - Script
+
+the courier is on the way to pick up the food and will arrive at the restaurant soon. Please be patient
+
+AR - Script
+
+المندوب في الطريق لاستلام الوجبة وسيصل إلى المطعم قريباً. نرجو منك التحلي بالصبر`,
+
+"merchant-fewer-items": `(Keeta Service (FAQ) =Uncommon issue  )
+
+
+(شرح توضيحي للمشكلة)
+يتواصل التاجر يشتكي من قلة الطلبات 
+
+(خطوات الحل )
+1- تدقيق حساب التاجر اذا ما كان يعاني من مشاكل لحلها 
+2- اذا لم يكن يعاني من مشاكل يتم توجيه التاجر لتفعيل حملة ترويجية
+
+----------------------------------------------------------
+
+----------------------------------------------------------
+
+(اذا كان يوجد مشكلة في الحساب يتم العمل على حلها باتباع قاعدة المعرفة الخاصة بها  )
+
+----------------------------------------------------------
+
+----------------------------------------------------------
+
+(اذا لم يكن هنالك مشكلة يتم توجيه التاجر بانشاء حملة ترويجية )
+
+EN – Script
+I have reviewed your account and confirmed that it is functioning correctly, and there are no technical issues preventing you from receiving orders. To increase your sales and boost the number of orders, I recommend activating one of the promotional campaigns available on our platform. These campaigns significantly help increase your store's visibility to customers and attract more orders. Thank you for contacting us
+
+ AR – Script
+ لقد قمت بمراجعة حسابك وتبين أن الحساب يعمل بشكل سليم ولا توجد أي مشاكل تقنية تمنع وصول الطلبات إليك. ومن أجل زيادة مبيعاتك ورفع عدد الطلبات، أنصحك بتفعيل إحدى الحملات الترويجية المتاحة عبر منصتنا، حيث تساعد هذه الحملات بشكل كبير في زيادة ظهور متجرك للعملاء وجذب طلبات أكثر. شكراً لتواصلك معنا `,
+
+"Private-information": `(Keeta Service (FAQ) =Business advice )
+
+(شرح توضيحي للمشكلة)
+
+التاجر يطلب معلومات التواصل مع  العميل أو السائق أو مدير الحساب 
+
+(خطوات الحل )
+1- توجيه التاجر الى تفاصيل الطلب للحصول على معلومات العميل
+2- توجيه التاجر الى تفاصيل الطلب للحصول على معلومات السائق  
+3- تزويد التاجر باسم مدير الحساب ولو واجه صعوبة بالتواصل معه يتم رفع طلب تواصل 
+
+----------------------------------------------------------
+
+(العميل )
+EN – Script
+
+We apologize that we are unable to provide you with the customer’s phone number directly through the chat, in compliance with privacy protection policies. However, you can always find the customer’s contact information by accessing the order details. Please note that this information disappears 4 hours after the order is completed to protect the customer’s privacy. Thank you for your understanding
+ AR – Script
+
+نعتذر عن عدم إمكانية تزويدك برقم العميل مباشرة عبر المحادثة وذلك التزاماً بسياسة حماية الخصوصية، ولكن يمكنك دائماً العثور على معلومات التواصل مع العميل من خلال الدخول على تفاصيل الطلب. يرجى العلم أن هذه المعلومات تختفي بعد 4 ساعات من بعد اكتمال الطلب لحماية خصوصية العميل. شكراً لتفهمك
+
+----------------------------------------------------------
+
+(السائق )
+We apologize for not being able to provide you with the courier's number directly through the chat in compliance with our privacy policy. but, you can always find the name and number of the courier assigned to the order by accessing the order details on your device and contacting them directly from there. Thank you for your understanding
+
+ AR – Script
+نعتذر عن عدم إمكانية تزويدك برقم السائق مباشرة عبر المحادثة وذلك التزاماً بسياسة حماية الخصوصية، ولكن يمكنك دائماً العثور على اسم ورقم السائق المخصص للطلب من خلال الدخول على تفاصيل الطلب في جهازك والتواصل معه مباشرة من هناك. شكراً لتفهمك 
+
+----------------------------------------------------------
+
+(مدير الحساب )
+
+EN – Script
+
+Regarding your request, your account manager's name is (.....). And due to our privacy policy, we cannot share any personal information directly through the chat. If you are having difficulty reaching them, I can submit a  contact request so they can contact you directly as soon as possible
+
+ AR – Script
+
+بخصوص طلبك، فإن اسم مدير الحساب الخاص بك هو (.....)، ,ولأسباب تتعلق بسياسة حماية الخصوصية لا يمكننا مشاركة اي معلومات شخصية بشكل مباشر عبر المحادثة . إذا كنت تواجه صعوبة في الوصول إليه، يمكنني رفع طلب تواصل ليقوم هو بالاتصال بك مباشرة في أقرب وقت 
+ 
+----------------------------------------------------------
+
+(سكريبت التصعيد)
+
+EN – Script
+
+I have submitted your request to contact your account manager, and you will be contacted as soon as possible. Thank you for your patience and understanding
+
+ AR – Script
+
+لقد قمت برفع طلبك للتواصل مع مدير حسابك، وسيتم التواصل معك في أقرب وقت ممكن. شكراً لك على صبرك وتفهمك
+
+
+----------------------------------------------------------
+
+(EscalationTemplate)
+
+Feedback time:
+
+Case ID:
+
+Store ID:
+
+Store Name:
+
+Store Address:
+
+Store Contact Information:966-
+
+The brand manager:
+
+Full Description :`,
+
+"merchant-hotline" : `(Keeta Service (FAQ) = Inquiry about system operations (PC/APP/POS) )
+
+(شرح توضيحي للمشكلة)
+
+التاجر يطلب معلومات التواصل مع خدمه العملاء بشكل مباشر 
+
+(خطوات الحل )
+
+----------------------------------------------------------
+
+(توجيه التاجر الى مركز المساعدة حيث سيجد رقم التواصل )
+
+EN – Script
+
+To contact our Customer Service team directly, please go to the "Help Center" section on your dashboard or app. You will find the direct contact number at the bottom of the page, along with all available support options to assist you. Thank you for contacting us
+
+ AR – Script
+
+للتواصل مع فريق خدمة العملاء بشكل مباشر، يرجى التوجه إلى قسم "مركز المساعدة" عبر لوحة التحكم أو التطبيق الخاص بك، حيث ستجد رقم التواصل المباشر في اسفل الصفحه وكافة خيارات الدعم المتاحة لخدمتك. شكراً لتواصلك معنا`,
+
+      "wrong-order" : `(Keeta Service (FAQ) = Picked up the wrong order )
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر بسبب ان السائق استلم الطلب الخاطئ 
+
+(خطوات الحل)
+
+التحقق من حالة الطلب اذا كانت مكتمل ام لا 
+
+----------------------------------------------------------
+
+
+(  (1)  اذا كان مكتمل )
+
+EN – Script
+
+Thank you for reaching out. the driver has already delivered the order to the customer and the order is marked as completed , I recommend waiting until the customer contacts us to resolve the issue in the best possible way. Thank you for your patience and cooperation
+
+AR – Script 
+
+شكرًا لتواصلك. لقد قام السائق بالفعل بتسليم الطلب إلى العميل، والطلب مكتمل في النظام, أنصح بالانتظار حتى يتم التواصل من قبل العميل معنا لحل المشكلة بأفضل طريقة ممكنة، شكرًا لك على صبرك وتعاونك 
+
+----------------------------------------------------------
+
+----------------------------------------------------------
+
+( (2) اذا كان الطلب غير مكتمل )
+
+----------------------------------------------------------
+
+----------------------------------------------------------
+
+( الاتصال بالسائق  للتاكد اذا ما كان بامكانه الرجوع للمتجر لاستلام الطلب الصحيح)
+
+EN – Call Script – For Courier
+
+Hello, this is () from Keeta customer service. This call will be recorded for quality control and training purposes. Regarding order number 0000,  you had received the wrong order. could you please go back to the store to pick up the correct one ?
+
+AR – Call Script – For Courier
+
+مرحبًا، معك () من خدمة عملاء كيتا، وهذه المكالمة ستكون مسجلة لغايات ضبط الجودة والتدريب. بخصوص الطلب رقم 0000، لقد قمت باستلام الطلب الخاطئ هل يمكنك الرجوع الى المتجر لاستلام الطلب الصحيح ؟ 
+
+----------------------------------------------------------
+
+(في حال نجاح الاتصال ووافق المندوب — معرفة الوقت الذي يحتاجه السائق للعودة واخبار التاجر ان السائق سيعود لاستلام الطلب الصحيح)
+
+EN – Script
+
+The driver confirmed that he will return to the store to pick up the correct order within  () ,thank you for your patience and cooperation 
+
+AR – Script 
+
+مرحبًا، السائق أكد أنه سيعود لاستلام الطلب الصحيح خلال (). شكرًا لك على صبرك وتعاونك
+
+----------------------------------------------------------
+
+(في حال نجاح الاتصال ورفض المندوب  — اخبار التاجر بانتظار تواصل العميل )
+
+EN – Script 
+
+The driver is unable to return. I recommend waiting until the customer is contacted to resolve the issue in the best possible way   , Thank you for your patience and cooperation 
+
+AR – Script
+
+السائق غير قادر على العودة. أنصح بالانتظار حتى يتم التواصل من قبل العميل لحل المشكلة بأفضل طريقة ممكنة، شكرًا لك على صبرك وتعاونك
+
+----------------------------------------------------------
+
+(في حال فشل  الاتصال — اخبار التاجر بانتظار تواصل العميل )
+
+EN – Script
+
+Apologies, but I have been unable to reach the driver. I recommend waiting until the customer contacts us to resolve the issue in the best possible way. Thank you for your patience and cooperation
+
+AR – Script
+
+عذراً، ولكن لم أتمكن من الوصول إلى السائق. أنصح حالياً بانتظار تواصل العميل معنا حتى يتم حل المشكلة بأفضل طريقة ممكنة. شكراً لك على صبرك وتعاونك`,
+
+"missed-items": `(Keeta Service (FAQ) =Courier missed some items during pick-up    )
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر بسبب ان السائق استلم الطلب ناقصا  
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+(التحقق من حالة الطلب اذا كانت مكتمل ام لا )
+
+----------------------------------------------------------
+
+( (1) اذا كان مكتمل )
+
+EN – Script
+
+Thank you for reaching out. the driver has already delivered the order to the customer and the order is marked as completed , I recommend waiting until the customer contacts us to resolve the issue in the best possible way. Thank you for your patience and cooperation
+
+AR – Script 
+
+شكرًا لتواصلك. لقد قام السائق بالفعل بتسليم الطلب إلى العميل، والطلب مكتمل في النظام, أنصح بالانتظار حتى يتم التواصل من قبل العميل لحل المشكلة بأفضل طريقة ممكنة، شكرًا لك على صبرك وتعاونك
+
+----------------------------------------------------------
+
+----------------------------------------------------------
+
+( (2) اذا كان الطلب غير مكتمل ) 
+
+----------------------------------------------------------
+
+( الاتصال بالسائق  للتاكد اذا ما كان بامكانه الرجوع للمتجر لاستلام باقي الطلب )
+
+EN – Call Script – For Courier
+
+Hello, this is () from Keeta customer service. This call will be recorded for quality control and training purposes. Regarding order number 0000,  it appears that you received an incomplete order. Could you please return to the store to pick up the remaining items? 
+
+AR – Call Script – For Courier
+
+مرحبًا، معك () من خدمة عملاء كيتا، وهذه المكالمة ستكون مسجلة لغايات ضبط الجودة والتدريب. بخصوص الطلب رقم 0000، لقد قمت باستلام الطلب ناقصا هل يمكنك الرجوع الى المتجر لاستلام باقي الأصناف؟ 
+
+----------------------------------------------------------
+
+(في حال نجاح الاتصال ووافق المندوب — معرفة الوقت الذي يحتاجه السائق للعودة واخبار التاجر ان السائق سيعود لاستلام باقي الأصناف)
+
+EN – Script
+
+The driver confirmed that he will return to the store to pick up the Remaining items  within  () ,thank you for your patience and cooperation 
+
+AR – Script 
+
+مرحبًا، السائق أكد أنه سيعود لاستلام الأصناف الناقصة خلال (). شكرًا لك على صبرك وتعاونك
+
+----------------------------------------------------------
+
+(في حال نجاح الاتصال ورفض المندوب  — اخبار التاجر بانتظار تواصل العميل )
+
+EN – Script 
+
+The driver is unable to return. I recommend waiting until the customer is contacted to resolve the issue in the best possible way   , Thank you for your patience and cooperation 
+
+AR – Script
+
+السائق غير قادر على العودة. أنصح بالانتظار حتى يتم التواصل من قبل العميل لحل المشكلة بأفضل طريقة ممكنة، شكرًا لك على صبرك وتعاونك
+
+----------------------------------------------------------
+
+(في حال فشل  الاتصال — اخبار التاجر بانتظار تواصل العميل )
+
+EN – Script
+
+Apologies, but I have been unable to reach the driver. I recommend waiting until the customer contacts us to resolve the issue in the best possible way. Thank you for your patience and cooperation
+
+AR – Script
+
+عذراً، ولكن لم أتمكن من الوصول إلى السائق. أنصح حالياً بانتظار تواصل العميل معنا حتى يتم حل المشكلة بأفضل طريقة ممكنة. شكراً لك على صبرك وتعاونك `,
+
+      "long-prep": `(Keeta Service (FAQ) =  Long meal preparation time   )
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر يطلب وقتا اضافيا لتحضير الطلب 
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+(تزويد التاجر بطريقة تمديد الوقت بشكل يدوي من خلال تفاصيل الطلب )
+
+EN – Script
+To extend the preparation time, please go to the "Order Details" and click on the "Order Issue" button. Then, select "Need more time to prepare" where you can manually extend the time by 5 to 15 minutes. Thank you for contacting us.
+
+AR - Script
+بإمكانك تمديد وقت التحضير من خلال الدخول على "تفاصيل الطلب" ثم الضغط على زر "مشكلة في الطلب"، وبعد ذلك قم باختيار "أحتاج وقتاً إضافياً للتحضير". يمكنك تمديد الوقت يدوياً بما يتراوح بين 5 إلى 15 دقيقة. شكراً لتواصلك معنا`,
+
+      "merchant-closed": `(Keeta Service (FAQ) = Inquiry about system operations (PC/APP/POS))
+
+(شرح توضيحي للمشكلة)
+    
+يتواصل التاجر بسبب ان المتجر مغلق بسبب بلاغ سائق
+
+(خطوات الحل)
+
+  ----------------------------------------------------------
+
+(تزويد التاجر بكيفية عمل النظام وطريقة تغيير حالة المتجر )
+    
+EN – Script
+
+We would like to clarify the reason for the store being marked as closed. When the first driver reports that the store is closed, the system allows the store 8 minutes to confirm this status through the POS system. If the store does not confirm within these 8 minutes, the system will automatically cancel the order and mark the store as closed. To reopen the store, you can do so manually by accessing the POS system, computer, or mobile app, then navigating to Operating Settings, Business Hours, and switching the status to manual reopen, or the store status will automatically change to open at the start of the next scheduled business hours
+
+AR - Script
+
+نود توضيح سبب إغلاق المتجر، حيث عند قيام أول سائق بالإبلاغ بأن المتجر مغلق، يتم منح المتجر مدة 8 دقائق لتأكيد الحالة عبر نظام نقاط البيع. في حال عدم تأكيد الإغلاق خلال هذه المدة، يقوم النظام تلقائيًا بإلغاء الطلب وتغيير حالة المتجر إلى مغلق. ويمكنكم إعادة فتح المتجر يدويًا من خلال الدخول إلى تطبيق  أو الكمبيوتر أو التطبيق المحمول، ثم التوجه إلى إعدادات التشغيل، ساعات العمل، والتبديل إلى حالة إعادة الفتح يدويًا، أو سيتم تحويل حالة المتجر تلقائيًا إلى مفتوح عند بداية ساعات العمل التالية المحددة في النظام`, 
+
+      "block-courier": `(Keeta Service (FAQ) = Inquiry about system operations (PC/APP/POS))
+
+      (شرح توضيحي للمشكلة)
+
+يتواصل التاجر للأستفسار عن طريقة حظر او فك الحظر عن المندوب 
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+((1) تزويد التاجر بكيفية حظر المندوب   )
+
+EN – Script
+
+You can manually block the driver by going to the order details and selecting the driver information, where you will find the option to block the driver from receiving orders from your store again. Please note that you can block up to three drivers only. If you would like to block a new driver, you will need to unblock one of the previously blocked drivers
+
+AR - Script
+
+يمكنك حظر السائق يدويًا من خلال التوجه إلى تفاصيل الطلب، ثم الضغط على معلومات السائق، حيث ستجد خيار حظر السائق من استلام الطلبات من متجرك مرة أخرى. نود التنويه إلى أنه يمكن حظر ثلاثة سائقين كحد أقصى، وفي حال رغبتك بحظر سائق جديد، سيتوجب عليك إلغاء حظر أحد السائقين الذين تم حظرهم مسبقًا
+
+----------------------------------------------------------
+
+((2) تزويد التاجر بكيفية فك حظر المندوب   )
+
+(من الحاسوب )
+
+EN – Script
+
+you can unblock a rider from your blacklist so they can receive orders again. On PC, go to Operations Settings → Rider Blacklist, find the rider you want to unblock, and select Unblock. After unblocking, the rider will be eligible to be assigned to your future orders
+AR - Script
+
+مرحبًا، يمكنك فك حظر أي مندوب من قائمتك السوداء ليتمكن من استلام الطلبات مرة أخرى. على الحاسوب، اذهب إلى إعدادات العمليات → قائمة المناديب السوداء، ابحث عن المندوب الذي تريد فك الحظر عنه، واختر إلغاء الحظر. بعد فك الحظر، سيكون المندوب مؤهلاً لتلقي الطلبات المستقبلية
+
+----------------------------------------------------------
+
+(من تطبيق الهاتف)
+
+EN – Script
+
+you can unblock a rider from your blacklist to allow them to receive orders again. On the Mobile App, open the Menu → Store Settings, scroll down to the Rider List, find the rider, and tap Unblock. After unblocking, the rider will be eligible for your future orders
+AR - Script
+
+يمكنك فك حظر أي مندوب من قائمتك السوداء ليتمكن من استلام الطلبات مرة أخرى. على تطبيق الهاتف، افتح القائمة → إعدادات المتجر، انتقل إلى أسفل الصفحة إلى قائمة المناديب، وابحث عن المندوب واضغط على إلغاء الحظر. بعد فك الحظر، سيكون المندوب مؤهلاً لتلقي الطلبات المستقبلية
+
+----------------------------------------------------------
+
+(من جهاز نقاط البيع )
+
+EN – Script
+
+you can unblock a rider from your blacklist so they can receive orders again. On POS, go to Settings → Rider Blacklist, find the rider you want to unblock, and select Unblock. After unblocking, the rider will be eligible to be assigned to your future orders
+
+AR - Script
+
+يمكنك فك حظر أي مندوب من قائمتك السوداء ليتمكن من استلام الطلبات مرة أخرى. على جهاز نقاط البيع اذهب إلى الإعدادات → قائمة المناديب السوداء، ابحث عن المندوب الذي تريد فك الحظر عنه، واختر إلغاء الحظر. بعد فك الحظر، سيكون المندوب مؤهلاً لتلقي الطلبات المستقبلية `,
+
+"accept-mode" : `(Keeta Service (FAQ) = Inquiry about system operations (PC/APP/POS))
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر للأستفسار عن وضع قبول الطلبات  
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+(شرح سياسة عمل وضعيات قبول الطلبات وطريقة التبديل بينهم )
+
+EN – Script
+
+you can change your store’s order acceptance mode by going to Order Overview, where you will find a toggle button at the top of the page. You can select Manual or Automatic mode. In Manual mode, when a new order arrives, you need to press Accept Order to confirm it and print the receipt. In Automatic mode, new orders are accepted automatically by the system and the receipt is printed immediately without any action from your end 
+
+AR - Script
+
+يمكنك تعديل وضع قبول الطلبات في متجرك من خلال الذهاب إلى قائمة الطلبات، حيث ستجد زر التبديل في أعلى الصفحة. يمكنك اختيار الوضع يدوي أو تلقائي حسب رغبتك. في الوضع اليدوي، عند وصول أي طلب جديد، ستحتاج للضغط على قبول الطلب لتأكيده وطباعته. في الوضع التلقائي، يتم قبول الطلبات الجديدة مباشرة من النظام ويتم طباعة الإيصال تلقائيًا دون أي تدخل
+`,
+
+"customer-change-plan" : `(Keeta Service (FAQ) = Business advice)
+    
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر بسبب ان العميل تواصل معه يريد الغاء الطلب  
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+(اخبار التاجر ان العميل يجب عليه التواصل مباشرة معنا حتى يتم توثيق المشكلة والعمل على حلها )
+
+EN – Script
+
+We recommend directing the customer to contact our Customer Support team directly, in order to properly document the issue and work on resolving it in the best possible way Thank you for your patience and understanding
+
+AR - Script
+
+نوصي بتوجيه العميل للتواصل معنا مباشرة عبر خدمة العملاء، وذلك لضمان توثيق المشكلة بشكل رسمي والعمل على معالجتها بأفضل صورة ممكنة. شكرًا جزيلًا على صبرك وتفهمك`,    
+
+"sold-out" : ` (Keeservice (FAQ) =  Item sold out / Out of stock)
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر للأبلاغ أن هنالك اصناف ناقصة ولا يمكن تحضيرها 
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+((1) التاكد مما اذا كان تم التواصل مع العميل والوصول الى حل مثل استبدال الاصناف الناقصة او استردادها ) 
+
+( EN - Script )
+
+Have you informed the customer about the out-of-stock issue?
+
+(AR - Script)
+
+هل تم إبلاغ العميل بمشكلة عدم توافر الاصناف؟
+
+----------------------------------------------------------
+
+((2) اذا لم يتم التواصل يتم نصح التاجر بالتواصل مع العميل مباشرة )
+
+( EN - Script )
+
+Thanks for reaching out, I recommend you contact the customer directly to find a solution. If needed, I can help with the refund process
+
+(AR - Script)
+
+شكراً لتواصلك، أوصي بالتواصل مع العميل مباشرة لإيجاد حل. وإذا احتجت، أقدر أساعدك في عملية استرجاع المبلغ
+
+----------------------------------------------------------
+
+((3) اذا تم التواصل بين التاجر والعميل واتفقا على الغاء الطلب او استرداد جزئي يتم توجيه التاجر بالقيام بالاجراء بشكل يدوي )
+
+( EN - Script )
+
+You can refund the customer and remove the item from the shelf as follows:
+
+Go to "Today's Order" -> "Accepted" -> "Order Issue"
+
+Select "Item Unavailable", choose the reason for a partial refund, pick the items to refund, and tap "Confirm Partial Refund".
+
+Go to "Set Unavailable", select the item, and click "OK" to take it off the shelf
+
+(AR - Script)
+
+يمكنك استرداد المبلغ للعميل وإزالة المنتج من الرف بالطريقة التالية:
+
+اذهب إلى "طلبات اليوم" → "المقبولة" → "مشكلة في الطلب"
+
+حدد "الصنف غير متاح"، واختر سبب الاسترداد الجزئي، واختر المنتجات التي تريد استردادها، وانقر على "بدء الاسترداد الجزئي"
+
+اختر المنتجات التي تم بيعها بالكامل، وانقر على "حسنا" لإزالته من الرف
+
+----------------------------------------------------------
+
+((4) اذا اصر التاجر على المساعدة من قبل خدمه العملا يتم استرداد قيمه الاصناف او الطلب كاملا حسب الحالة )
+
+ EN - Script )
+
+I'll assist with a refund or cancellation for the customer. In the future, please remove out-of-stock items quickly to avoid affecting the customer experience.
+
+
+(AR - Script)
+
+سأقوم بمساعدتك في استرجاع المبلغ أو إلغاء الطلب للعميل. في المستقبل، يرجى إزالة المنتجات غير المتوفرة بسرعة لتجنب التأثير على تجربة العميل
+
+----------------------------------------------------------
+
+Responsible Party: Merchant - food sould out
+NO compensation`,    
+
+                 "rest-closed" : ` (Keeservice (FAQ) = The restaurant is closed)
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر للأابلاغ أنه لا يمكنه تحضير الطلب لانه قام بالأغلاق  
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+((1) التاكد مما اذا كان تم التواصل مع العميل والوصول الى حل ) 
+
+( EN - Script )
+
+Have you informed the customer about the unable to prepare meals issue?
+
+(AR - Script)
+
+هل قمت بإبلاغ العميل بمشكلة عدم القدرة على تحضير الوجبات؟
+
+----------------------------------------------------------
+
+((2) اذا لم يتم التواصل يتم نصح التاجر بالتواصل مع العميل مباشرة )
+
+( EN - Script )
+
+Thanks for reaching out, I recommend you contact the customer directly to find a solution. If needed, I can help with the refund process
+(AR - Script)
+
+شكرًا لتواصلك. أنصحك بالتواصل المباشر مع العميل لإيجاد حل. وإذا احتجت، أنا هنا للمساعدة في عملية استرداد المبلغ
+
+----------------------------------------------------------
+
+((3) اذا تم التواصل بين التاجر والعميل واتفقا على الغاء الطلب او استرداد جزئي يتم توجيه التاجر بالقيام بالاجراء بشكل يدوي )
+
+( EN - Script )
+
+You can refund the customer as follows:
+Go to "Today's Order" -> "Accepted" -> "Order Issue" then choose the reason for refund, and tap "Confirm Refund"
+
+(AR - Script)
+
+يمكنك استرداد المبلغ للعميل كما يلي:
+اذهب إلى "طلبات اليوم" → "مقبولة" → "مشكلة في الطلب"، ثم اختر سبب الاسترجاع واضغط على "تأكيد الاسترجاع"
+----------------------------------------------------------
+
+((4) اذا اصر التاجر على المساعدة من قبل خدمه العملا يتم استرداد قيمه الاصناف او الطلب كاملا حسب الحالة )
+
+ EN - Script )
+
+I'll assist with the cancellation for the customer. In the future, please close on time to avoid affecting the customer experience
+
+(AR - Script)
+
+سأساعد في إلغاء الطلب للعميل. في المستقبل، يرجى إغلاق الطلب في الوقت المحدد لتجنب التأثير على تجربة العميل
+
+----------------------------------------------------------
+
+Refund = Rsponsible Party: Merchant - Restaurant not open for business
+compensation = -5 SAR- Rsponsible Party: Merchant - Restaurant not open for business  
+`,    
+
+"rest-closed" : ` (Keeservice (FAQ) = The restaurant is busy and can't accept orders)
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر للابلاغ أنه لا يمكنه تحضير الطلب لانه مشغول  
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+((1) التاكد مما اذا كان تم التواصل مع العميل والوصول الى حل ) 
+
+( EN - Script )
+
+Have you informed the customer about the unable to prepare meals issue?
+
+(AR - Script)
+
+هل قمت بإبلاغ العميل بمشكلة عدم القدرة على تحضير الوجبات؟
+
+----------------------------------------------------------
+
+((2) اذا لم يتم التواصل يتم نصح التاجر بالتواصل مع العميل مباشرة )
+
+( EN - Script )
+
+Thanks for reaching out, I recommend you contact the customer directly to find a solution. If needed, I can help with the refund process
+(AR - Script)
+
+شكرًا لتواصلك. أنصحك بالتواصل المباشر مع العميل لإيجاد حل. وإذا احتجت، أنا هنا للمساعدة في عملية استرداد المبلغ
+
+----------------------------------------------------------
+
+((3) اذا تم التواصل بين التاجر والعميل واتفقا على الغاء الطلب او استرداد جزئي يتم توجيه التاجر بالقيام بالاجراء بشكل يدوي )
+
+( EN - Script )
+
+You can refund the customer as follows:
+Go to "Today's Order" -> "Accepted" -> "Order Issue" then choose the reason for refund, and tap "Confirm Refund"
+
+(AR - Script)
+
+يمكنك استرداد المبلغ للعميل كما يلي:
+اذهب إلى "طلبات اليوم" → "مقبولة" → "مشكلة في الطلب"، ثم اختر سبب الاسترجاع واضغط على "تأكيد الاسترجاع"
+----------------------------------------------------------
+
+((4) اذا اصر التاجر على المساعدة من قبل خدمه العملا يتم استرداد قيمه الاصناف او الطلب كاملا حسب الحالة )
+
+ EN - Script )
+
+I'll assist with the cancellation for the customer. In the future, please close on time to avoid affecting the customer experience
+
+(AR - Script)
+
+سأساعد في إلغاء الطلب للعميل. في المستقبل، يرجى إغلاق الطلب في الوقت المحدد لتجنب التأثير على تجربة العميل
+
+----------------------------------------------------------
+
+Refund = Rsponsible Party: Merchant 
+compensation = -5 SAR - Rsponsible Party - Merchant`,   
+
+
+      "order-taken" : ` (Keeservice (FAQ) = The order has been taken by someone else) 
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر للأبلاغ أنه قام بتسليم الطلب الى سائق ثم جاء سائق جديد يريد نفس الطلب 
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+((1) التاكد من عدد السائقين الذين تم تعيينهم على الطلب )
+
+----------------------------------------------------------
+
+(سائق واحد - يتم التحقق اذا ما كان السائق قام برفع بلاغ  )
+
+اذا كان السائق قد رفع بلاغ تكون المسؤولية على السائق  
+اذا لم يكن السائق قد رفع بلاغ  تكون المسؤولية على التاجر 
+
+----------------------------------------------------------
+
+(سائقين أثنين  ) 
+
+يتم الغاء الطلب والمسؤولية تكون على السائق الأول
+
+----------------------------------------------------------
+
+(ثلاث سائقين او اكثر )
+
+- يتم الأتصال بالسائق الاول والسائق ما قبل الأخير للتحقق اذا ما كانوا قد استملوا الطلب
+
+- اذا تم العثور على السائق الذي استلم الطلب يتم الغاء الطلب وتحميله المسؤولية
+
+- اذا لم يتم العثور على السائق الذي استلم الطلب يتم  الغاء الطلب والمسؤولية تكون على المنصة نيابة عن السائق
+
+----------------------------------------------------------
+
+(اذا كانت المسؤولية على سائق )
+Responsibility rider
+Refund reason - The meal was taken by someone else
+Compensation reason - 5 SAR - The meal was taken by someone else
+
+
+(اذا كانت المسؤولية على التاجر )
+Responsibility merchant
+Refund reason - Food theft(taken/misplaced inside the restaurant)
+Compensation reason - 5 SAR - Food loss/Taken by someone else
+
+
+(اذا كانت المسؤولية على المنصة من أجل السائق )
+Responsibility Platform for Rider
+Refund reason - The meal was taken by someone else
+Compensation reason - 5 SAR - The meal was taken by someone else
+
+----------------------------------------------------------
+
+(scripts)
+
+EN - Script
+  Thank you for your patience, after verification，the order will be canceled and the customer will receive a full refund and compensation. You can continue to accept new orders as usual. Thank you for your understanding
+
+AR - Script
+  شكرا على صبرك وتعاونك! بعد ما تم التحقق، الطلب تم إلغاؤه، والعميل راح يسترجع كامل المبلغ مع التعويض. تقدر تكمل في استلام الطلبات الجديدة كالمعتاد. شكرًا لتفهمك، والله يعطيك العافية!`,
+  };
+
+    const CONTENT_HTML = {}; // reserved for pre-rendered safe HTML if needed
+
+    // --- helpers ---
+    const isArabic = (s) => /[\u0600-\u06FF\u0750-\u077F]/.test(s);
+
+    function escapeHtml(s){
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // Sorting helpers: order keys / nodes by title length (shorter titles first)
+    function sortKeysByTitleLength(arr){
+      return arr.slice().sort((a,b)=>{
+        const ta = TREE[a]?.title || '';
+        const tb = TREE[b]?.title || '';
+        const la = ta.trim().length;
+        const lb = tb.trim().length;
+        if(la !== lb) return la - lb;
+        return ta.localeCompare(tb);
+      });
+    }
+    function sortNodesByTitleLength(arr){
+      return arr.slice().sort((x,y)=>{
+        const xa = x?.title || '';
+        const yb = y?.title || '';
+        const la = xa.trim().length;
+        const lb = yb.trim().length;
+        if(la !== lb) return la - lb;
+        return xa.localeCompare(yb);
+      });
+    }
+
+    // Render plain content to HTML (keeps headings/parenthesis logic, escaped)
+    // Updated to treat specific label lines as sub-headings (bold + slightly larger)
+    function renderPlainContentToHTML(text){
+      if(!text) return '<div class="kb-block"><p class="kb-en">No content defined for this item.</p></div>';
+      const lines = text.split(/\r?\n/).map(l => l.replace(/\u00A0/g,' ').replace(/\t/g,' ').replace(/\s+$/,''));
+
+      // Known heading labels (exact matches) that should use the stronger subheading style
+      const subHeadingExact = [
+        'شرح توضيحي للمشكلة',
+        'خطوات الحل'
+      ];
+
+      const blocks = [];
+      let current = [];
+      for(const ln of lines){
+        if(ln.trim() === ''){
+          if(current.length){ blocks.push(current.slice()); current = []; }
+        } else current.push(ln);
+      }
+      if(current.length) blocks.push(current);
+
+      const htmlParts = [];
+      blocks.forEach(block => {
+        if(block.length === 1 && /^[-\s]{3,}$/.test(block[0])){
+          // use styled divider element instead of raw HR or dashed text
+          htmlParts.push('<div class="kb-block"><div class="kb-divider" role="separator"></div></div>');
+          return;
+        }
+
+        const parts = [];
+        block.forEach(ln => {
+          const trimmed = ln.trim();
+
+          // If line is parenthesized -> original heading behavior
+          if(/^\(.+\)$/.test(trimmed)){
+            const inner = trimmed.replace(/^\(|\)$/g, '').trim();
+            const cls = isArabic(inner) ? 'kb-ar' : 'kb-en';
+            parts.push(`<p class="${cls} kb-heading">${escapeHtml(inner)}</p>`);
+            return;
+          }
+
+          // If exact match one of the known labels -> render as subheading (bold + slightly larger)
+          const normalized = trimmed;
+          // compare case-insensitive for latin, exact for Arabic
+          const isSub = subHeadingExact.some(sh => {
+            if(/[A-Za-z]/.test(sh)) return sh.toLowerCase() === normalized.toLowerCase();
+            return sh === normalized;
+          });
+          if(isSub){
+            const cls = isArabic(trimmed) ? 'kb-ar' : 'kb-en';
+            parts.push(`<p class="${cls} kb-subheading">${escapeHtml(trimmed)}</p>`);
+            return;
+          }
+
+          // fallback: normal paragraph with language direction class
+          const cls = isArabic(trimmed) ? 'kb-ar' : 'kb-en';
+          parts.push(`<p class="${cls}">${escapeHtml(trimmed)}</p>`);
+        });
+
+        htmlParts.push(`<div class="kb-block">${parts.join('')}</div>`);
+      });
+
+      return htmlParts.join('');
+    }
+
+    // set drawer content
+    function setDrawerContent(key){
+      if(CONTENT_HTML && CONTENT_HTML[key]){
+        drawerBody.innerHTML = CONTENT_HTML[key];
+        return;
+      }
+      const raw = CONTENT[key];
+      const html = renderPlainContentToHTML(raw);
+      drawerBody.innerHTML = html;
+    }
+
+    // --- navigation & UI ---
+    // Precompute a flat map for quick lookups (improves findNodeInfo performance)
+    const KEY_MAP = {};
+    (function buildKeyMap(){
+      Object.keys(TREE).forEach(rootKey=>{
+        const root = TREE[rootKey];
+        KEY_MAP[rootKey] = { type:'root', mainKey: rootKey, node: root };
+        (root.children || []).forEach(child=>{
+          KEY_MAP[child.key] = { type:'child', mainKey: rootKey, node: child };
+          (child.children || []).forEach(grand=>{
+            KEY_MAP[grand.key] = { type:'grand', mainKey: rootKey, parentKey: child.key, node: grand };
+          });
+        });
+      });
+    })();
+
+    function findNodeInfo(key){
+      return KEY_MAP[key] || null;
+    }
+
+    // --- FILL EMPTY SUB-ICON CONTENTS (only for entries that are empty)
+    // This block only adds a short "شرح توضيحي للمشكلة" to CONTENT keys that:
+    // - are sub-icons (children or grandchildren in TREE)
+    // - have empty or whitespace-only content
+    (function fillEmptySubContents(){
+      function isSubKey(key){
+        return !!KEY_MAP[key] && KEY_MAP[key].type !== 'root';
+      }
+      Object.keys(CONTENT).forEach(k=>{
+        try{
+          const value = CONTENT[k];
+          if(!isSubKey(k)) return; // only modify sub-icons (children/grandchildren)
+          if(typeof value === 'string' && value.trim().length > 0) return; // already has text -> skip
+          const title = (findNodeInfo(k) && findNodeInfo(k).node && findNodeInfo(k).node.title) ? findNodeInfo(k).node.title : k;
+          // Minimal problem description in Arabic (only "شرح توضيحي للمشكلة" as requested)
+          CONTENT[k] = `(Keeservice (FAQ) = ${title})
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر بخصوص ${title} ويطلب توضيح المشكلة.`.trim();
+        }catch(e){
+          // silent fallback: do not interrupt app if anything goes wrong
+        }
+      });
+    })();
+
+    const grid = document.getElementById('grid');
+    const drawer = document.getElementById('drawer');
+    const drawerOverlay = document.getElementById('drawerOverlay');
+    const drawerTitle = document.getElementById('drawerTitle');
+    const drawerBody = document.getElementById('drawerBody');
+    const drawerClose = document.getElementById('drawerClose');
+    const globalBack = document.getElementById('globalBack');
+    const pageTitle = document.getElementById('pageTitle');
+
+    // state to manage focus & expanded button
+    let lastFocusedEl = null;
+    let lastOpenedButton = null;
+    let drawerFocusTrapHandler = null;
+    let drawerFocusInHandler = null;
+    let drawerResizeHandler = null;
+
+    function createItem(key,title,attrs={}){
+      const item = document.createElement('div');
+      item.className = 'grid-item';
+      item.setAttribute('role','listitem');
+      if(attrs.main) item.dataset.main = attrs.main;
+      if(attrs.parent) item.dataset.parent = attrs.parent;
+      item.dataset.key = key;
+
+      const icon = document.createElement('button');
+      icon.className = 'icon';
+      icon.type = 'button';
+      icon.dataset.key = key;
+      icon.setAttribute('aria-label', title);
+      icon.setAttribute('aria-controls','drawer');
+      icon.setAttribute('aria-expanded','false');
+
+      const mono = document.createElement('div');
+      mono.className = 'monogram';
+      mono.textContent = 'KB';
+      icon.appendChild(mono);
+
+      const label = document.createElement('div');
+      label.className = 'label';
+      label.textContent = title;
+
+      item.appendChild(icon);
+      item.appendChild(label);
+      return item;
+    }
+
+    function showGridItems(){ requestAnimationFrame(()=> grid.classList.add('show-items')); }
+    function computeShiftValue(){
+      const cssVal = getComputedStyle(document.documentElement).getPropertyValue('--drawer-width') || '720px';
+      const dw = Math.min(parseFloat(cssVal) || 720, window.innerWidth * 0.6);
+      const shift = Math.min(dw * 0.52, window.innerWidth * 0.5);
+      return `translateX(-${shift}px)`;
+    }
+    function shiftGridForDrawer(){ grid.style.transform = computeShiftValue(); }
+    function resetGridShift(){ grid.style.transform = ''; }
+    function updatePageTitle(s){ pageTitle.textContent = s ? `Merchant KB — ${s}` : 'Merchant KB'; }
+
+    // navigation stack
+    let navStack = [];
+    function homeView(){ return { type:'home' }; }
+    function mainView(mainKey){ return { type:'main', mainKey, title: TREE[mainKey]?.title || mainKey }; }
+    function grandView(mainKey, childKey){ const child = (TREE[mainKey]?.children || []).find(c=>c.key===childKey); return { type:'grand', mainKey, childKey, title: child?.title || childKey }; }
+    function contentView(key){ return { type:'content', key, title: (findNodeInfo(key)?.node?.title) || key }; }
+    function currentView(){ return navStack.length ? navStack[navStack.length-1] : null; }
+    function shallowEqualViews(a,b){ if(!a||!b) return false; if(a.type!==b.type) return false; if(a.type==='home') return true; if(a.type==='main') return a.mainKey===b.mainKey; if(a.type==='grand') return a.mainKey===b.mainKey && a.childKey===b.childKey; if(a.type==='content') return a.key===b.key; return false; }
+
+    // syncHashToTop now uses location.hash to create browser history entries for navigation
+    function syncHashToTop(){
+      const t = currentView();
+      if(!t) return;
+      const newHash = t.type === 'home' ? '#/' :
+                      t.type === 'main' ? `#/${encodeURIComponent(t.mainKey)}` :
+                      t.type === 'grand' ? `#/${encodeURIComponent(t.mainKey)}/${encodeURIComponent(t.childKey)}` :
+                      `#/content/${encodeURIComponent(t.key)}`;
+      if(location.hash !== newHash){
+        // change the hash which also creates a browser history entry
+        location.hash = newHash;
+      }
+    }
+
+    function pushView(view){ const cur = currentView(); if(cur && shallowEqualViews(cur, view)) return; navStack.push(view); syncHashToTop(); renderTop(); updateBackVisibility(); }
+    function popView(){ if(navStack.length<=1){ navStack=[homeView()]; syncHashToTop(); renderTop(); updateBackVisibility(); return; } navStack.pop(); syncHashToTop(); renderTop(); updateBackVisibility(); }
+
+    // SINGLE correct implementation of buildStackFromHash (fixed syntax and no duplicates)
+    function buildStackFromHash(hash){
+      const cleaned = (hash || '#/').replace(/^#\/?/, '');
+      const parts = cleaned.split('/').filter(Boolean);
+      const stack = [ homeView() ];
+      if(parts.length === 0) return stack;
+      if(parts[0] === 'content' && parts[1]){
+        const key = decodeURIComponent(parts[1]);
+        const info = findNodeInfo(key);
+        if(!info){ stack.push(contentView(key)); return stack; }
+        if(info.type === 'root'){ stack.push(contentView(key)); return stack; }
+        if(info.type === 'child'){ stack.push(mainView(info.mainKey)); stack.push(contentView(key)); return stack; }
+        if(info.type === 'grand'){ stack.push(mainView(info.mainKey)); stack.push(grandView(info.mainKey, info.parentKey)); stack.push(contentView(key)); return stack; }
+      }
+      const main = parts[0];
+      if(!TREE[main]) return stack;
+      stack.push(mainView(main));
+      if(parts.length === 1) return stack;
+      const child = parts[1];
+      const parentNode = TREE[main];
+      const childNode = (parentNode?.children||[]).find(c=>c.key===child);
+      if(!childNode) return stack;
+      if(Array.isArray(childNode.children) && childNode.children.length>0){ stack.push(grandView(main, child)); return stack; }
+      else { stack.push(contentView(child)); return stack; }
+    }
+
+    function renderHome(){ grid.className='icons-grid home'; grid.innerHTML=''; const keys=Object.keys(TREE); const sorted=sortKeysByTitleLength(keys); sorted.forEach(k=>grid.appendChild(createItem(k, TREE[k].title))); showGridItems(); updatePageTitle(null); }
+    function renderMain(mainKey){ const node=TREE[mainKey]; if(!node) return renderHome(); grid.className='icons-grid page'; grid.innerHTML=''; const children=node.children||[]; sortNodesByTitleLength(children).forEach(ch=>grid.appendChild(createItem(ch.key, ch.title, { main: mainKey }))); showGridItems(); updatePageTitle(node.title); }
+    function renderGrand(mainKey, childKey){ const mainNode=TREE[mainKey]; if(!mainNode) return renderHome(); const child=(mainNode.children||[]).find(c=>c.key===childKey); if(!child) return renderMain(mainKey); grid.className='icons-grid page'; grid.innerHTML=''; const grandchildren=child.children||[]; sortNodesByTitleLength(grandchildren).forEach(g=>grid.appendChild(createItem(g.key, g.title, { main: mainKey, parent: childKey }))); showGridItems(); updatePageTitle(child.title); }
+
+    function openDrawerForKey(key){
+      const title = (findNodeInfo(key)?.node?.title) || key;
+      drawerTitle.textContent = title;
+      setDrawerContent(key);
+
+      // focus management: save last focused element
+      try{ lastFocusedEl = document.activeElement; }catch(e){ lastFocusedEl = null; }
+
+      drawer.classList.add('open');
+      drawerOverlay.classList.add('open');
+      drawer.setAttribute('aria-hidden','false');
+      drawerOverlay.setAttribute('aria-hidden','false');
+
+      // make background inert for screen readers and keyboard
+      try{
+        grid.setAttribute('aria-hidden','true');
+        // if browser supports inert, use it (non-standard but available in modern browsers or polyfills)
+        if('inert' in grid) grid.inert = true;
+      }catch(e){ /* noop */ }
+
+      // mark the lastOpenedButton as expanded if available
+      if(lastOpenedButton && lastOpenedButton.setAttribute){
+        lastOpenedButton.setAttribute('aria-expanded','true');
+      }
+
+      // set up focus trap (basic implementation)
+      const focusableSelector = 'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])';
+      const focusableElements = () => Array.from(drawer.querySelectorAll(focusableSelector)).filter(el=>el.offsetParent !== null);
+
+      // handler to keep focus within the drawer on Tab presses
+      drawerFocusTrapHandler = function(e){
+        if(e.key !== 'Tab') return;
+        const list = focusableElements();
+        if(list.length === 0){
+          e.preventDefault();
+          return;
+        }
+        const first = list[0];
+        const last = list[list.length - 1];
+        if(e.shiftKey){
+          if(document.activeElement === first){
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if(document.activeElement === last){
+            e.preventDefault();
+            first.focus();
+          }
+        }
+      };
+
+      // handler to prevent focus from moving outside (works with focusin)
+      drawerFocusInHandler = function(e){
+        if(!drawer.contains(e.target)){
+          // move focus back to close button
+          try{ drawerClose.focus(); }catch(ex){}
+        }
+      };
+
+      document.addEventListener('keydown', drawerFocusTrapHandler);
+      document.addEventListener('focusin', drawerFocusInHandler);
+
+      // ensure drawerClose is focused for keyboard users
+      try{ drawerClose.focus(); }catch(e){}
+
+      // recalc grid shift on resize while drawer open
+      drawerResizeHandler = function(){
+        // recompute shift with a small throttle/debounce
+        if(drawer.classList.contains('open')){
+          shiftGridForDrawer();
+        }
+      };
+      window.addEventListener('resize', drawerResizeHandler);
+
+      try{ pageTitle.style.display='none'; }catch(e){}
+      shiftGridForDrawer();
+      document.title = title ? `${title} — Merchant KB` : 'Merchant KB';
+      grid.style.pointerEvents = 'none';
+    }
+
+    function closeDrawerUI(){
+      drawer.classList.remove('open');
+      drawerOverlay.classList.remove('open');
+      drawer.setAttribute('aria-hidden','true');
+      drawerOverlay.setAttribute('aria-hidden','true');
+
+      try{ pageTitle.style.display=''; }catch(e){}
+      resetGridShift();
+      document.title = 'Merchant KB';
+      grid.style.pointerEvents = '';
+
+      // restore background accessibility
+      try{
+        grid.removeAttribute('aria-hidden');
+        if('inert' in grid) grid.inert = false;
+      }catch(e){ /* noop */ }
+
+      // cleanup focus trap handlers
+      try{
+        if(drawerFocusTrapHandler) document.removeEventListener('keydown', drawerFocusTrapHandler);
+        if(drawerFocusInHandler) document.removeEventListener('focusin', drawerFocusInHandler);
+        drawerFocusTrapHandler = null;
+        drawerFocusInHandler = null;
+      }catch(e){ /* noop */ }
+
+      // remove resize listener
+      try{ if(drawerResizeHandler) window.removeEventListener('resize', drawerResizeHandler); drawerResizeHandler = null; }catch(e){}
+
+      // clear aria-expanded on previously opened button
+      if(lastOpenedButton && lastOpenedButton.setAttribute){
+        try{ lastOpenedButton.setAttribute('aria-expanded','false'); }catch(e){}
+        lastOpenedButton = null;
+      }
+
+      // restore focus to previously-focused element
+      try{ if(lastFocusedEl && lastFocusedEl.focus) lastFocusedEl.focus(); }catch(e){ lastFocusedEl = null; }
+
+      drawerBody.scrollTop = 0;
+    }
+
+    function renderTop(){
+      const top = currentView() || homeView();
+      closeDrawerUI();
+      if(top.type==='home') renderHome();
+      else if(top.type==='main') renderMain(top.mainKey);
+      else if(top.type==='grand') renderGrand(top.mainKey, top.childKey);
+      if(top.type==='content'){
+        const info = findNodeInfo(top.key);
+        if(info){
+          if(info.type === 'root') renderHome();
+          else if(info.type === 'child') renderMain(info.mainKey);
+          else if(info.type === 'grand'){ renderMain(info.mainKey); renderGrand(info.mainKey, info.parentKey); }
+        }
+        openDrawerForKey(top.key);
+      }
+      if(top && top.title) updatePageTitle(top.title);
+      else if(top.type==='main') updatePageTitle(TREE[top.mainKey]?.title);
+      else if(top.type==='home') updatePageTitle(null);
+    }
+
+    function updateBackVisibility(){ const shouldShow = navStack.length>1; if(shouldShow) globalBack.removeAttribute('hidden'); else globalBack.setAttribute('hidden',''); }
+
+    // grid click handler (uses delegation)
+    grid.addEventListener('click', (ev)=>{
+      const btn = ev.target.closest('.icon');
+      if(!btn) return;
+      const key = btn.dataset.key;
+      if(!key) return;
+
+      // Save which button opened (for aria-expanded + focus restore)
+      lastOpenedButton = btn;
+
+      const info = findNodeInfo(key);
+      if(info && info.type === 'root'){
+        const node = info.node;
+        if(node && Array.isArray(node.children) && node.children.length > 0){ pushView(mainView(info.mainKey)); return; }
+        else { pushView(contentView(info.mainKey)); return; }
+      }
+      const item = btn.closest('.grid-item');
+      const mainAttr = item?.dataset.main || null;
+      const parentAttr = item?.dataset.parent || null;
+      if(mainAttr && !parentAttr){
+        const mainKey = mainAttr; const childKey = key;
+        const parentNode = TREE[mainKey];
+        const childNode = (parentNode?.children||[]).find(c=>c.key===childKey);
+        if(childNode && Array.isArray(childNode.children) && childNode.children.length>0){ pushView(grandView(mainKey, childKey)); return; }
+        else { pushView(contentView(childKey)); return; }
+      }
+      if(mainAttr && parentAttr){ pushView(contentView(key)); return; }
+      pushView(contentView(key));
+    });
+
+    // overlay/close/back handlers
+    drawerOverlay.addEventListener('click', (e)=>{ e.preventDefault(); const top=currentView(); if(top && top.type==='content') popView(); else closeDrawerUI(); });
+    drawerClose.addEventListener('click', (e)=>{ e.preventDefault(); const top=currentView(); if(top && top.type==='content') popView(); else closeDrawerUI(); });
+    globalBack.addEventListener('click', (e)=>{ e.stopPropagation(); popView(); });
+
+    // click on empty stage => pop (unchanged)
+    document.addEventListener('click', function(e){
+      const interactive = 'button, a, input, textarea, select, summary, [role="button"]';
+      if(e.target.closest(interactive)) return;
+      if(e.target.closest('.grid-item') || e.target.closest('.icon') || e.target.closest('.drawer') || e.target.closest('.drawer-overlay') || e.target.closest('#globalBack') || e.target.closest('.title')) return;
+      if(e.target.closest('.stage') || e.target === document.body || e.target === document.documentElement){
+        popView();
+      }
+    }, true);
+
+    // handle hashchange: rebuild stack from hash
+    window.addEventListener('hashchange', ()=> {
+      navStack = buildStackFromHash(location.hash || '#/');
+      if(!navStack || !navStack.length) navStack=[homeView()];
+      renderTop();
+      updateBackVisibility();
+    });
+
+    window.addEventListener('keydown',(e)=>{ if(e.key==='Escape'){ const top=currentView(); if(top && top.type==='content') popView(); else { navStack=[homeView()]; syncHashToTop(); renderTop(); updateBackVisibility(); } } });
+
+    function init(){
+      navStack = buildStackFromHash(location.hash || '#/');
+      if(!navStack || !navStack.length) navStack=[homeView()];
+      renderTop();
+      updateBackVisibility();
+      // ensure the current hash reflects the navStack (use replace to avoid extra history entry on first load)
+      const cur = currentView();
+      if(cur){
+        const initialHash = cur.type === 'home' ? '#/' :
+                            cur.type === 'main' ? `#/${encodeURIComponent(cur.mainKey)}` :
+                            cur.type === 'grand' ? `#/${encodeURIComponent(cur.mainKey)}/${encodeURIComponent(cur.childKey)}` :
+                            `#/content/${encodeURIComponent(cur.key)}`;
+        if(location.hash !== initialHash) history.replaceState(null,'', initialHash);
+      }
+    }
+    init();
+
+  })();
+  </script>
+</body>
+</html>
