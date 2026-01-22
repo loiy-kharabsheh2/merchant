@@ -218,7 +218,6 @@
         children: [
           { key:"Private-information", title:"information", children:false },
           { key:"merchant-fewer-items", title:"Merchant fewer order", children:false },
-          { key:"courier-no-press-pickup", title:"Courier did not press pickup button", children:false },
           { key:"customer-change-plan", title:"Customer change plan", children:false }
 
         ]
@@ -228,7 +227,7 @@
 
     // --- CONTENT: full content (all previous entries preserved) ---
     const CONTENT = {
-      "script": `  (N/A) hhh
+      "script": `  (N/A)
 (Greeting) 
 Hi, ()  with you from keeta customer service 
 Hi, ()  with you from keeta customer service. How can I assist you today ?
@@ -2644,7 +2643,7 @@ I'll assist with a refund or cancellation for the customer. In the future, pleas
 
 ----------------------------------------------------------
 
-Responsible Party: Merchant - food sould out
+Responsible Party: Merchant - food sold out
 NO compensation`,    
 
                  "rest-closed" : ` (Keeservice (FAQ) = The restaurant is closed)
@@ -2709,7 +2708,69 @@ Refund = Rsponsible Party: Merchant - Restaurant not open for business
 compensation = -5 SAR- Rsponsible Party: Merchant - Restaurant not open for business  
 `,    
 
-"rest-closed" : ` (Keeservice (FAQ) = The restaurant is busy and can't accept orders)
+"rest-closed" : ` (Keeservice (FAQ) = The restaurant is closed)
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر للابلاغ أنه لا يمكنه تحضير الطلب لانه اغلق  
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+((1) التاكد مما اذا كان تم التواصل مع العميل والوصول الى حل ) 
+
+ EN - Script 
+
+Have you informed the customer about the unable to prepare meals issue?
+
+AR - Script
+
+هل قمت بإبلاغ العميل بمشكلة عدم القدرة على تحضير الوجبات؟
+
+----------------------------------------------------------
+
+((2) اذا لم يتم التواصل يتم نصح التاجر بالتواصل مع العميل مباشرة )
+
+ EN - Script 
+
+Thanks for reaching out, I recommend you contact the customer directly to find a solution. If needed, I can help with the refund process
+AR - Script
+
+شكرًا لتواصلك. أنصحك بالتواصل المباشر مع العميل لإيجاد حل. وإذا احتجت، أنا هنا للمساعدة في عملية استرداد المبلغ
+
+----------------------------------------------------------
+
+((3) اذا تم التواصل بين التاجر والعميل واتفقا على الغاء الطلب او استرداد جزئي يتم توجيه التاجر بالقيام بالاجراء بشكل يدوي )
+
+ EN - Script 
+
+You can refund the customer as follows:
+Go to "Today's Order" -> "Accepted" -> "Order Issue" then choose the reason for refund, and tap "Confirm Refund"
+
+AR - Script
+
+يمكنك استرداد المبلغ للعميل كما يلي:
+اذهب إلى "طلبات اليوم" → "مقبولة" → "مشكلة في الطلب"، ثم اختر سبب الاسترجاع واضغط على "تأكيد الاسترجاع"
+
+----------------------------------------------------------
+
+((4) اذا اصر التاجر على المساعدة من قبل خدمه العملاء يتم استرداد قيمه الاصناف او الطلب كاملا حسب الحالة )
+
+ EN - Script 
+
+I'll assist with the cancellation for the customer. In the future, please close on time to avoid affecting the customer experience
+
+AR - Script
+
+سأساعد في إلغاء الطلب للعميل. في المستقبل، يرجى إغلاق الطلب في الوقت المحدد لتجنب التأثير على تجربة العميل
+
+----------------------------------------------------------
+
+Refund = Rsponsible Party: Merchant 
+compensation = -5 SAR - Rsponsible Party - Merchant`, 
+      
+"rest-busy" : ` (Keeservice (FAQ) = The restaurant is busy and can't accept orders)
 
 (شرح توضيحي للمشكلة)
 
@@ -2721,11 +2782,11 @@ compensation = -5 SAR- Rsponsible Party: Merchant - Restaurant not open for busi
 
 ((1) التاكد مما اذا كان تم التواصل مع العميل والوصول الى حل ) 
 
-( EN - Script )
+ EN - Script 
 
 Have you informed the customer about the unable to prepare meals issue?
 
-(AR - Script)
+AR - Script
 
 هل قمت بإبلاغ العميل بمشكلة عدم القدرة على تحضير الوجبات؟
 
@@ -2733,10 +2794,10 @@ Have you informed the customer about the unable to prepare meals issue?
 
 ((2) اذا لم يتم التواصل يتم نصح التاجر بالتواصل مع العميل مباشرة )
 
-( EN - Script )
+ EN - Script 
 
 Thanks for reaching out, I recommend you contact the customer directly to find a solution. If needed, I can help with the refund process
-(AR - Script)
+AR - Script
 
 شكرًا لتواصلك. أنصحك بالتواصل المباشر مع العميل لإيجاد حل. وإذا احتجت، أنا هنا للمساعدة في عملية استرداد المبلغ
 
@@ -2744,24 +2805,25 @@ Thanks for reaching out, I recommend you contact the customer directly to find a
 
 ((3) اذا تم التواصل بين التاجر والعميل واتفقا على الغاء الطلب او استرداد جزئي يتم توجيه التاجر بالقيام بالاجراء بشكل يدوي )
 
-( EN - Script )
+ EN - Script 
 
 You can refund the customer as follows:
 Go to "Today's Order" -> "Accepted" -> "Order Issue" then choose the reason for refund, and tap "Confirm Refund"
 
-(AR - Script)
+AR - Script
 
 يمكنك استرداد المبلغ للعميل كما يلي:
 اذهب إلى "طلبات اليوم" → "مقبولة" → "مشكلة في الطلب"، ثم اختر سبب الاسترجاع واضغط على "تأكيد الاسترجاع"
+
 ----------------------------------------------------------
 
-((4) اذا اصر التاجر على المساعدة من قبل خدمه العملا يتم استرداد قيمه الاصناف او الطلب كاملا حسب الحالة )
+((4) اذا اصر التاجر على المساعدة من قبل خدمه العملاء يتم استرداد قيمه الاصناف او الطلب كاملا حسب الحالة )
 
- EN - Script )
+ EN - Script 
 
 I'll assist with the cancellation for the customer. In the future, please close on time to avoid affecting the customer experience
 
-(AR - Script)
+AR - Script
 
 سأساعد في إلغاء الطلب للعميل. في المستقبل، يرجى إغلاق الطلب في الوقت المحدد لتجنب التأثير على تجربة العميل
 
