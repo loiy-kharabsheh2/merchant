@@ -141,13 +141,14 @@
           { key:"food-large", title:"Food too large / heavy", children:false },
           { key:"refund-issues", title:"Refund issues", children:[
               { key:"auto-refund", title:"Inquiry about automatic refunds by Keeta", children:false },
+                          { key:"refund-disputes", title:"Inquiry about refund disputes", children:false },
+                          { key:"order-compensation", title:"Disputes over lost item/order compensation", children:false },
               { key:"refund-result", title:"Inquiry about order refund result", children:false },
               { key:"unsatisfied", title:"Unsatisfied with dispute result/policies", children:false },
               { key:"refund-status", title:"Inquiry about order refund status", children:false }
             ]
           },
           { key:"wrong-order", title:"Picked up the wrong order", children:false },
-          { key:"order-taken", title:"The order has been taken by someone else", children:false }
         ]
       },
       "non-order": {
@@ -156,7 +157,9 @@
           { key:"account-registration", title:"Account registration", children:false }, 
           { key:"system-operations", title:"Inquiry about system operations (PC/APP/POS)", children:[
           { key:"accept-mode", title:"Order accepting mode settings", children:false }, 
-          { key:"block-courier", title:"courier blacklist", children:false }, 
+          { key:"Orders-history", title:"Orders history", children:false }, 
+          { key:"Resting-rule", title:"Auto Resting rule", children:false }, 
+          { key:" blacklist-rider", title:"Blacklist rider", children:false }, 
           { key:"merchant-closed", title:"Merchant closed / rider report", children:false },
           { key:"merchant-hotline", title:"Merchant hotline", children:false }
              ]
@@ -164,14 +167,14 @@
 
             
           { key:"account-deletion", title:"Account deletion", children:false },
-          { key:"qualification", title:"Qualification materials for onboarding", children:false },
-          { key:"abnormal-login", title:"Abnormal login", children:[
-              { key:"abnormal-password", title:"Password" },
-              { key:"abnormal-email", title:"Email" }
+          { key:"Account-modification", title:"Account information modification", children:[
+              { key:"Risk-control", title:"Risk control problem" },
+              { key:"Account-modification-password", title:"Password" },
+              { key:"Account-modification-email", title:"Email" }
             ]
           },
           { key:"restaurant-info", title:"Restaurant information modification", children:[
-              { key:"store-name", title:"Store Name / Category / Address" },
+              { key:"store-name", title:"Information that cannot be edited by the merchant" },
               { key:"header-image", title:"Header Image" },
               { key:"min-order", title:"Minimum Order Value" },
               { key:"prep-time", title:"Order preparation time" },
@@ -184,6 +187,14 @@
               { key:"edit-group", title:"Edit item" },
               { key:"sort-item", title:"Sort item" },
               { key:"item-avail", title:"Item available / Unavailable" }
+            ]
+          },
+          { key:"Complaints", title:"Complaints", children:[
+              { key:"courier-attitude", title:"Courier's attitude issues" },
+              { key:"bd-noncomp", title:"BD non-compliant behaviours" },
+              { key:"Praise-BD", title:"Praise the BD" },
+              { key:"Couriers-steal-food", title:"Couriers steal food" },
+              { key:"Withdraw-complaint", title:"Withdraw the complaint" }
             ]
           },
           { key:"marketing", title:"Marketing campaign inquiry", children:false },
@@ -200,11 +211,14 @@
             ]
           },
           { key:"link-bank", title:"Link / verify bank cards", children:false },
-          { key:"bd-noncomp", title:"BD non-compliant behaviours", children:false },
           { key:"commission-issues", title:"Commission issues", children:false },
-          { key:"courier-attitude", title:"Courier's attitude issues", children:false },
           { key:"hardware", title:"Hardware setting (POS / Printer)", children:[
-              { key:"closed", title:"Unusually closed / rest mode" },
+              { key:"closed", title:"Unusually closed" },
+              { key:"No-network", title:"No network" },
+              { key:"update-page", title:"update takes a long time (yellow background)" },
+              { key:"Abnormalities ", title:"Abnormalities" },
+              { key:"replace", title:"replace with a new machine" },
+              { key:"Account-behavior", title:"Account behavior is abnormal" },
               { key:"unable-charge", title:"Unable to charge" },
               { key:"paper-light", title:"Paper color is light" },
               { key:"printer-not", title:"Printer doesn't print" },
@@ -333,34 +347,84 @@ I completely understand your anger towards the courier's behavior, and I apologi
 أفهم تمامًا شعوركم بالغضب من تصرف المندوب، وأعتذر عن أي إزعاج تسببت به هذه التصرفات 
 
 I apologize for the actions that upset you, and we appreciate your communication with us 
-أعتذر عن التصرفات التي أغضبتكم، ونحن نقدر لكم تواصلكم معنا 
+أعتذر عن التصرفات التي أغضبتكم، ونحن نقدر لكم تواصلكم معنا `,
 
--------------------------------------------------------------------------------
 
-(Frequent requests )
-No specific request
-Ask for compensation
-Ask for calling him
-Ask for calling the customer
-Ask for calling the courier 
-Ask for the courier phone numebr 
-Ask for the customer phone number 
-Ask for the BD phone number
-Ask for Escalating the issue
-Ask for Extending the time
-Ask for Extending the courier time
-Ask for assign a courier 
-Ask for Blocking the courier 
-Ask to cancel the order
-Ask to transfer the order to a car courier 
-Ask to adjust his open hour
-Ask to modify his menu 
-Ask to modify his Merchant Information
-Ask to change the merchant's status 
-Ask to File a complaint against the courier
-Ask to File a complaint against the BD
-Ask to File a complaint against the customer`,
+      "Risk-control": `(Keeservice (FAQ) = Account information modification)
+(شرح توضيحي للمشكلة)
 
+(Risk control problem )
+
+يتواصل التاجر بسبب مشكلة تواجهه اثناء تسجيل الدخول 
+
+(خطوات الحل )
+
+----------------------------------------------------------
+
+((1)  اطلب لقطة شاشة لتحديد نوع المشكلة )
+
+EN - Script
+
+Can you please provide me with a screenshot of the issue
+
+AR - Script
+
+بتقدر تزودني بلقطة شاشة للمشكلة لو سمحت
+
+----------------------------------------------------------
+
+((1) اذا كانت المشكلة تتعلق بنشاط غير اعتيادي على الحساب - يتم تصعيد المشكلة)
+(Unusual account activity)
+
+EN - Script
+
+The message you're seeing typically occurs when your account is restricted due to risk control measures. These measures are in place to protect both you and the platform from potential security risks.
+Kindly provide me with your store ID or the phone number associated with your account to escalate the issue to the relevant team for further investigation. We will provide feedback within 1-2 working days
+
+AR - Script
+
+الرسالة اللي تظهر لك عادةً تكون بسبب وجود قيود على الحساب نتيجة إجراءات التحكم في المخاطر. هالإجراءات موجودة لحمايتك وحماية المنصة من المخاطر الأمنية
+ يرجى تزويدي بالرقم المعرف لمتجرك أو برقم الهاتف المرتبط بحسابك حتى أتمكن من تصعيد المشكلة إلى الفريق المختص لمزيد من التحقيق. سنقدّم لك ملاحظات خلال يوم إلى يومي عمل
+
+----------------------------------------------------------
+
+((2) اذا كانت المشكلة تتعلق بان التاجر قام بعدة محاولات للحصول على رمز التحقق)
+
+(Yoda control)
+
+(يتم توجيه التاجر بالانتظار لمدة 24 ساعة ثم المحاولة مرة اخرى )
+
+EN - Script
+
+Kindly be advised that the system has detected frequent attempts to request a verification code. In accordance with established security protocols, this feature has been temporarily suspended to safeguard the account. Consequently, a waiting period of 24 hours is required before attempting again to allow for an automatic system reset. We appreciate your understanding and cooperation
+
+AR - Script
+
+نحيطكم علماً بأن النظام قد رصد محاولات متكررة لطلب رمز التحقق في فترة وجيزة، وبناءً على بروتوكولات الأمان المعتمدة، تم تعليق هذه الخاصية مؤقتاً لحماية الحساب. عليه، يتوجب الانتظار لمدة 24 ساعة كاملة قبل معاودة المحاولة لضمان إعادة تفعيل الخدمة تلقائياً من قبل النظام. نشكر لكم حسن تفهمكم وتعاونكم
+
+
+(اذا استمرت المشكلة لأكثر من 24 ساعة يتم تصعيد المشكلة )
+
+EN - Script
+
+Since the issue has persisted for more than 24 hours, Kindly provide me with your store ID or the phone number associated with your account to escalate the issue to the relevant team for further follow-up, Thank you for your patience and understanding
+AR - Script
+
+نظراً لاستمرار المشكلة لأكثر من 24 ساعة يرجى تزويدي بالرقم المعرف لمتجرك أو برقم الهاتف المرتبط بحسابك حتى أتمكن من تصعيد المشكلة إلى الفريق المختص للمتابعة . نشكر لكم حسن تفهمكم وتعاونكم
+    
+ ----------------------------------------------------------
+
+(EscalationTemplate)
+
+Feedback time:
+
+Case ID:
+
+Store ID: - OR - Store Contact Information:966-
+
+Full Description :
+
+`,
       "material-purchase": `(Keeservice (FAQ) = Material purchase)
 
 (شرح توضيحي للمشكلة)
@@ -391,17 +455,19 @@ Store Contact Information:966-
 The brand manager:
 Full Description :`,
 
-      "abnormal-password": `(Keeservice (FAQ) = Abnormal login)
+      "Account-modification-password": `(Keeservice (FAQ) = Account information modification)
 
 (شرح توضيحي للمشكلة)
 
-يتواصل التاجر بسبب انه فقد كلمة السر الخاصة به  
+(Non-risk control problem)
+
+يتواصل التاجر بسبب انه نسي كلمة السر الخاصة به  
 
 (خطوات الحل)
 
-((1) توجيه التاجر لاعادة تعيين كلمة السر الخاصة به بشكل يدوي  )
-
 ----------------------------------------------------------
+
+((1) توجيه التاجر لاعادة تعيين كلمة السر الخاصة به بشكل يدوي  )
 
 EN - Script
 On the login homepage, choose [Forgot Password] and follow the operation prompts. If you log in with an email, enter the registered and bound email, and reset the password through the email link; if you log in with a mobile phone number, enter the registered mobile phone number, and reset the password after mobile phone verification
@@ -427,11 +493,13 @@ Case ID:
 Store ID: - OR - Store Contact Information:966-
 Full Description :`,
 
-      "abnormal-email": `(Keeservice (FAQ) = Abnormal login)
+      "Account-modification-email": `(Keeservice (FAQ) = Account information modification)
 
 (شرح توضيحي للمشكلة)
 
-يتواصل التاجر بسبب انه فقد بريده الالكتروني
+(Non-risk control problem)
+
+يتواصل التاجر بسبب انه نسي بريده الالكتروني
 
 (خطوات الحل)
 
@@ -546,7 +614,7 @@ AR - Script
 
 ----------------------------------------------------------
 
-(اذا كان هنالك مشكلة ي البطاقة وتحتاج تعديل أو تعيينها كبطاقة السحب يتم توجيه التاجر لتعديل الخطأ)
+(اذا كان هنالك مشكلة في البطاقة وتحتاج تعديل أو تعيينها كبطاقة السحب يتم توجيه التاجر لتعديل الخطأ)
 
 EN - Script
 Log in to the merchant's PC backend, then go to the "Financial Management" section. After that, select "Bank Card" To be able to modify your bank card details
@@ -686,13 +754,27 @@ AR - Script
 
 ----------------------------------------------------------
 
-((2) اذا واجه التاجر مشكلة اثناء ذلك ينصح بالتواصل مع مدير الاعمال الخاص به حتى يقوم بمساعدته بشكل مباشر)
+((2) اذا واجه التاجر مشكلة اثناء العملية او اصر على مساعدة خدمه العملاء يتم تصعيد المشكلة)
 
 EN - Script
-If you encounter any issues, I recommend reaching out to your business manager. They will be able to assist you directly and resolve the issue quickly
+
+Please know that I’m reporting this to our team immediately, and I will make sure to get a solution for you as soon as possible
 
 AR - Script
-إذا واجهت أي مشكلة، أنصحك بالتواصل مع مدير الأعمال الخاص بك، حيث سيكون قادرًا على مساعدتك بشكل مباشر وحل المشكلة بسرعة`,
+
+يرجى العلم إنّني سأقوم برفع هالموضوع فورًا لفريقنا، وبتأكد إننا نلاقي حل بأسرع وقت
+
+----------------------------------------------------------
+
+(EscalationTemplate)
+Feedback time:
+Case ID:
+Store ID:
+Store Name:
+Store Address:
+Store Contact Information:966-
+The brand manager:
+Full Description :`,
 
       "sort-item": `(Keeservice (FAQ) = Menu modification)
 
@@ -714,17 +796,31 @@ AR - Script
 
 ----------------------------------------------------------
 
-((2) اذا واجه التاجر مشكلة اثناء ذلك ينصح بالتواصل مع مدير الاعمال الخاص به حتى يقوم بمساعدته بشكل مباشر)
+((2) اذا واجه التاجر مشكلة اثناء العملية او اصر على مساعدة خدمه العملاء يتم تصعيد المشكلة)
 
 EN - Script
-If you encounter any issues, I recommend reaching out to your business manager. They will be able to assist you directly and resolve the issue quickly
+
+Please know that I’m reporting this to our team immediately, and I will make sure to get a solution for you as soon as possible
 
 AR - Script
-إذا واجهت أي مشكلة، أنصحك بالتواصل مع مدير الأعمال الخاص بك، حيث سيكون قادرًا على مساعدتك بشكل مباشر وحل المشكلة بسرعة`,
+
+يرجى العلم إنّني سأقوم برفع هالموضوع فورًا لفريقنا، وبتأكد إننا نلاقي حل بأسرع وقت
+
+----------------------------------------------------------
+
+(EscalationTemplate)
+Feedback time:
+Case ID:
+Store ID:
+Store Name:
+Store Address:
+Store Contact Information:966-
+The brand manager:
+Full Description :`,
 
       "edit-group": `(Keeservice (FAQ) = Menu modification)
 
-(شرح توضيحي للمشكل)
+(شرح توضيحي للمشكلة)
 
 يتواصل التاجر لتعديل الأصناف أو المجموعات في قائمة الطعام الخاصة به
 
@@ -754,13 +850,27 @@ AR - Script
 
 ----------------------------------------------------------
 
-((2) اذا واجه التاجر مشكلة اثناء ذلك ينصح بالتواصل مع مدير الاعمال الخاص به حتى يقوم بمساعدته بشكل مباشر)
+((2) اذا واجه التاجر مشكلة اثناء العملية او اصر على مساعدة خدمه العملاء يتم تصعيد المشكلة)
 
 EN - Script
-If you encounter any issues, I recommend reaching out to your business manager. They will be able to assist you directly and resolve the issue quickly
+
+Please know that I’m reporting this to our team immediately, and I will make sure to get a solution for you as soon as possible
 
 AR - Script
-إذا واجهت أي مشكلة، أنصحك بالتواصل إلى مدير الأعمال الخاص بك، حيث سيكون قادرًا على مساعدتك بشكل مباشر وحل المشكلة بسرعة`,
+
+يرجى العلم إنّني سأقوم برفع هالموضوع فورًا لفريقنا، وبتأكد إننا نلاقي حل بأسرع وقت
+
+----------------------------------------------------------
+
+(EscalationTemplate)
+Feedback time:
+Case ID:
+Store ID:
+Store Name:
+Store Address:
+Store Contact Information:966-
+The brand manager:
+Full Description :`,
 
       "create-item": `(Keeservice (FAQ) = Menu modification)
 
@@ -783,13 +893,27 @@ AR - Script
 
 ----------------------------------------------------------
 
-((2) اذا واجه التاجر مشكلة اثناء ذلك ينصح بالتواصل مع مدير الاعمال الخاص به حتى يقوم بمساعدته بشكل مباشر)
+((2) اذا واجه التاجر مشكلة اثناء العملية او اصر على مساعدة خدمه العملاء يتم تصعيد المشكلة)
 
 EN - Script
-If you encounter any issues, I recommend reaching out to your business manager. They will be able to assist you directly and resolve the issue quickly
+
+Please know that I’m reporting this to our team immediately, and I will make sure to get a solution for you as soon as possible
 
 AR - Script
-إذا واجهت أي مشكلة، أنصحك بالتواصل إلى مدير الأعمال الخاص بك، حيث سيكون قادرًا على مساعدتك بشكل مباشر وحل المشكلة بسرعة`,
+
+يرجى العلم إنّني سأقوم برفع هالموضوع فورًا لفريقنا، وبتأكد إننا نلاقي حل بأسرع وقت
+
+----------------------------------------------------------
+
+(EscalationTemplate)
+Feedback time:
+Case ID:
+Store ID:
+Store Name:
+Store Address:
+Store Contact Information:966-
+The brand manager:
+Full Description :`,
 
       "link-bank": `(Keeservice (FAQ) = Link / verify bank cards)
 
@@ -924,7 +1048,38 @@ EN - Script
 If you encounter any issues  , I recommend reaching out to your business manager. They will be able to assist you directly and resolve the issue quickly
 
 AR - Script
-إذا واجهت أي مشكلة ، أنصحك بالتواصل مع مدير الأعمال الخاص بك، حيث سيكون قادرًا على مساعدتك بشكل مباشر وحل المشكلة بسرعة`,
+إذا واجهت أي مشكلة ، أنصحك بالتواصل مع مدير الأعمال الخاص بك، حيث سيكون قادرًا على مساعدتك بشكل مباشر وحل المشكلة بسرعة
+
+----------------------------------------------------------
+
+((5) اذا لم يتمكن التاجر من التواصل مع مدير الاعمال او اصر على مساعدة خدمه العملاء يتم تصعيد المشكلة )
+
+EN - Script
+I have documented your issue, and it will be escalated to the relevant team for further follow-up, Thank you for your patience and understanding
+
+AR - Script
+
+لقد قمت بتوثيق مشكلتك، وسيتم رفعها إلى الفريق المختص لمتابعة الموضوع , شكرًا لك على صبرك وتفهمك
+
+----------------------------------------------------------
+
+(EscalationTemplate)
+
+Feedback time:
+
+Case ID:
+
+Store ID:
+
+Store Name:
+
+Store Address:
+
+Store Contact Information:966-
+
+The brand manager:
+
+Full Description :`,
 
       "courier-attitude": `(Keeservice (FAQ) = Courier's attitude issues)
 
@@ -960,38 +1115,6 @@ AR - Script
 ملاحظتك تم تسجيلها بالكامل، وسيتم رفعها فورا للفريق المختص للمتابعة
 نأخذ هالموضوع بجدية كبيرة، ونعمل على تحسين إدارة المندوبين لتفادي تكرار مثل هالمواقف
 شكرًا لك على تنبيهنا وصبرك، وإن شاء الله تكون تجربتك القادمة أفضل`,
-
-      "qualification": `(Keeservice (FAQ) = Qualification materials for restaurant onboarding)
-
-(شرح توضيحي للمشكلة)
-
-يتواصل التاجر يسال عن المستندات اللازمة للتسجيل  
-
-(خطوات الحل)
-
-----------------------------------------------------------
-
-((1) تزويد التاجر بقائمة المستندات المطلوبة)
-
-EN - Script
-To complete restaurant onboarding, please make sure you have the following qualification materials ready:
-1-Commercial registration
-2-VAT （Value-Added Tax）
-3-Commercial activity license
-4-Bank card
-5-ID card of the person signing the contract
-6-Merchant's basic information
-Once you prepare these materials, the registration can move forward smoothly
-
-AR - Script
-لاستكمال تسجيل المطعم، يرجى التأكد من توفر المتطلبات التالية:
-1- السجل التجاري
-2- شهادة ضريبة القيمة المضافة
-3- رخصة مزاولة النشاط التجارية
-4- بطاقة بنكية
-5- هوية الشخص الموقّع على العقد
-6- المعلومات الأساسية الخاصة بالمطعم
-متى ما جهزت هالوثائق، تقدر تكمل إجراءات الانضمام بكل سلاسة`,
 
       "account-deletion": `(Keeservice (FAQ) = Account deletion)
 
@@ -1038,16 +1161,48 @@ Full Description :`,
 EN - Script
 Hello, thank you for your support of Keeta.
 Please visit the following webpage and submit the merchant cooperation application. A sales manager will contact you after submission.
+
 https://merchant.keeta-global.com/web/joinin
 
 AR - Script
 مرحبًا، شكرًا لدعمك لمنصة كيتا.
 يرجى زيارة الرابط التالي وتعبئة نموذج الانضمام، وسيقوم مدير المبيعات بالتواصل معك بعد تقديم الطلب
+
 https://merchant.keeta-global.com/web/joinin
 
 ----------------------------------------------------------
 
-((2) في حال رفض التاجر او طلب مساعدة من خدمة العملاء، يتم تصعيد الحالة)
+((2) في حال طلب التاجر المستندات التي يحتاج تقديمها)
+
+EN - Script
+
+To complete restaurant onboarding, please make sure you have the following qualification materials ready:
+1-Commercial registration
+2-VAT （Value-Added Tax）
+3-Commercial activity license
+4-Bank card
+5-ID card of the person signing the contract
+6-Merchant's basic information
+Merchant's name / main image / address / phone / category / menu
+
+Once you prepare these materials, the registration can move forward smoothly
+
+AR - Script
+
+لاستكمال تسجيل المطعم، يرجى التأكد من توفر المتطلبات التالية:
+1- السجل التجاري
+2- شهادة ضريبة القيمة المضافة
+3- رخصة مزاولة النشاط التجارية
+4- بطاقة بنكية
+5- هوية الشخص الموقّع على العقد
+6- المعلومات الأساسية الخاصة بالمطعم
+الاسم / الصورة / العنوان / رقم الهاتف / الفئة / قائمة الطعام 
+
+متى ما جهزت هالوثائق، تقدر تكمل إجراءات الانضمام بكل سلاسة
+
+----------------------------------------------------------
+
+((3) في حال رفض التاجر او طلب مساعدة من خدمة العملاء، يتم تصعيد الحالة)
 
 EN - Script
 thank you for your support of Keeta. Please provide the following information, and I will pass it on to our business manager, who will get in touch with you.
@@ -1482,7 +1637,7 @@ Full Description :`,
       "closed": `(Keeservice (FAQ) = Hardware setting (POS/Printer))
 (شرح توضيحي للمشكلة)
 
-يتواصل التاجر للأبلاغ بان حالة المطعم مغلقة او في وضع إستراحه على غير العاده
+يتواصل التاجر للأبلاغ بان حالة المطعم مغلقة على غير العاده
 
 (خطوات الحل)
 
@@ -1491,7 +1646,7 @@ Full Description :`,
 ((1) اخبار التاجر بالاسباب الممكنه وكيفية اعادة تفعيل حالة المطعم )   
 EN - Script 
 
-I'm sincerely apologize for the inconvenience caused by the automatic closure of your store. I would like to clarify that this is an automated safety feature designed to ensure no orders are missed. The store automatically switches to (Rest) mode in two cases:
+I'm sincerely apologize for the inconvenience caused by the automatic closure of your store. I would like to clarify that this is an automated safety feature designed to ensure no orders are missed. The store automatically switches to (Closed) mode in two cases:
 
 First, if the POS device remains turned off for more than 10 minutes
 Second, if the device loses internet connection for more than 10 minutes
@@ -1500,7 +1655,7 @@ To resolve this and prevent it from recurring, please ensure that your device st
 
 AR - Script
 
-أعتذر منك بشدة على الإزعاج الناتج عن إغلاق المتجر تلقائياً، وأود توضيح أن هذا الإجراء يتم برمجياً كخاصية حماية لضمان عدم ضياع الطلبات, حيث يتحول المتجر تلقائياً إلى وضع (الاستراحة) في حالتين:
+أعتذر منك بشدة على الإزعاج الناتج عن إغلاق المتجر تلقائياً، وأود توضيح أن هذا الإجراء يتم برمجياً كخاصية حماية لضمان عدم ضياع الطلبات, حيث يتحول المتجر تلقائياً إلى وضع (الأغلاق) في حالتين:
 
 الأولى عند بقاء جهاز نقاط البيع مغلقاً لأكثر من 10 دقائق
 والثانية في حال فقدان الجهاز للاتصال بشبكة الإنترنت لمدة تتجاوز 10 دقائق
@@ -1626,23 +1781,92 @@ AR - Script
       "open-hours": `(Keeservice (FAQ) = Restaurant information modification)
 (شرح توضيحي للمشكلة)
 
-يتواصل التاجر يريد تعديل اوقات العمل  
+يتواصل التاجر يريد تعديل اوقات العمل او اضافة ساعات عمل خاصة بالأعياد والمناسبات 
 
 (خطوات الحل)
 
 ----------------------------------------------------------
 
-((1) إخبار التاجر بخطوات اعادة تعيين رقم الهاتف - من الهاتف والحاسوب فقط )
+((1) إخبار التاجر بخطوات تعديل ساعات العمل الخاصة به - من الهاتف والحاسوب وجهاز نقاط البيع  )
 
- EN - Script 
+----------------------------------------------------------
+
+(من الحاسوب )
+
+EN - Script 
  
-To adjust your operating hours, please log in to the merchant backend via your computer, navigate to Operation Settings, select Restaurant Info, and then go to Open Hours Setting
-Please note that operational hours may need to be adjusted during special holidays, such as Ramadan. For these occasions, please refer to the detailed instructions for setting up special operational hours to ensure your schedule is accurate 
+To modify the opening hours, log into the merchant backend on your PC. Then, navigate to Operation Settings, click on Restaurant Info, and proceed to Open Hours Setting. From there, you can adjust the opening hours as needed 
 
 AR - Script
 
-لتعديل أوقات العمل الخاصة بمتجرك، يرجى تسجيل الدخول إلى الواجهة الخلفية عبر جهاز الحاسوب، ثم الانتقال إلى إعدادات العمليات واختيار معلومات المطعم، ومنها يمكنك الدخول إلى إعدادات ساعات العمل لإجراء التعديلات المطلوبة 
-كما يرجى ملاحظة أن ساعات العمل قد تتطلب ضبطاً خاصاً خلال المناسبات والأعياد الرسمية (مثل شهر رمضان المبارك)، لذا يرجى مراجعة التعليمات التفصيلية الخاصة بإعدادات ساعات العمل للمناسبات الخاصة لضمان دقة مواعيدك `,
+لتعديل ساعات العمل، قم بتسجيل الدخول إلى حسابك في الموقع من جهاز الكمبيوتر، ثم انتقل إلى إعدادات العمليات، واضغط على معلومات المطعم، ثم اختر إعدادات ساعات العمل. من هنا يمكنك تعديل ساعات العمل حسب الحاجة
+
+
+----------------------------------------------------------
+
+(من تطبيق الهاتف  )
+
+EN - Script 
+ 
+To modify the opening hours via the app, log into the app, go to More, and tap on Store Settings. Then, select Open Hours Setting and adjust the opening hours according to your preferences
+
+AR - Script
+
+لتعديل ساعات العمل من خلال التطبيق، قم بتسجيل الدخول إلى التطبيق، ثم انتقل إلى المزيد واضغط على إعدادات المتجر. بعد ذلك، اختر إعدادات ساعات العمل وقم بتعديل الساعات حسب تفضيلاتك
+
+----------------------------------------------------------
+
+(من جهاز نقاط البيع)
+
+EN - Script 
+ 
+To change your store's opening hours using the POS machine, simply log into the POS system and navigate to Opening Hours. You can then adjust the store's hours as needed
+
+AR - Script
+
+لتعديل ساعات العمل من خلال جهاز نقاط البيع ، قم بتسجيل الدخول إلى النظام ثم اختر ساعات العمل. بعد ذلك، يمكنك تعديل الساعات حسب الحاجة
+
+----------------------------------------------------------
+
+(قد يتطلب تعديل ساعات العمل للمطاعم خلال العطلات الخاصة مثل رمضان أو الأعياد)
+
+((2) إخبار التاجر بخطوات اضافة وتعديل وحذف ساعات العمل الخاصة  )
+
+----------------------------------------------------------
+
+(انشاء ساعات عمل خاصة )
+
+EN – Script
+
+To create special operational hours, please log into the merchant portal using your restaurant account and credentials. After logging in, go to Operation Settings and select Opening Hours Settings. Then choose Special Hours, click on Add Special Dates, and select the required date range. After that, click on the Opening Hours button and set the start time and end time. For example, if your operating hours are from 6:00 PM to 3:00 AM the next day, please set the time accordingly. Once all details are completed, click Submit to save the changes
+
+AR – Script
+
+لإنشاء ساعات عمل خاصة، يرجى تسجيل الدخول إلى بوابة التاجر باستخدام حساب المطعم الخاص بك. بعد تسجيل الدخول، انتقل إلى إعدادات العمليات ثم اختر إعدادات ساعات العمل. بعد ذلك، حدد الساعات الخاصة واضغط على إضافة تواريخ خاصة، ثم اختر نطاق التاريخ المطلوب. بعدها اضغط على زر ساعات العمل وقم بتحديد وقت البداية ووقت النهاية. على سبيل المثال، إذا كانت ساعات العمل من الساعة 6 مساءً حتى 3 صباحًا لليوم التالي، يرجى ضبط الوقت بهذه الطريقة. بعد الانتهاء، اضغط على إرسال لحفظ التغييرات
+
+----------------------------------------------------------
+
+(تعديل ساعات العمل الخاصة )
+
+EN – Script
+
+To Edit special operational hours, please log into the merchant portal using your restaurant account and credentials. After logging in, go to Operation Settings and select Opening Hours Settings. Then choose Special Hours , After that, click Edit next to the existing opening hours. If the date needs to be changed, you can modify the date or add a new date range, for example during a holiday. If the operating time needs to be updated, adjust the opening and closing hours under the selected date. Once all changes are completed, click Submit to save them
+
+AR – Script
+
+لتعديل ساعات العمل الخاصة، يرجى تسجيل الدخول إلى بوابة التاجر باستخدام حساب المطعم، ثم الانتقال إلى إعدادات العمليات، واختيار إعدادات ساعات العمل، وبعدها الضغط على الساعات الخاصة. بعد ذلك، اضغط على تعديل بجانب ساعات العمل الحالية. في حال الحاجة لتغيير التاريخ، يمكنك تعديل التاريخ أو إضافة فترة زمنية جديدة (مثل فترات العطل). وإذا كنت بحاجة لتعديل وقت التشغيل، قم بتغيير ساعات العمل تحت التاريخ المحدد. بعد الانتهاء، اضغط على إرسال لحفظ التغييرات
+
+----------------------------------------------------------
+
+(حذف ساعات العمل الخاصة )
+
+EN – Script
+
+To delete special operational hours please log into the merchant portal using your restaurant account and credentials. After logging in, go to Operation Settings and select Opening Hours Settings. Then choose Special Hours , Click Edit next to the existing opening hours, then click the Trash icon on the right-hand side of the opening hours. Finally, click Submit to confirm and apply the changes
+
+AR – Script
+
+لتعديل ساعات العمل الخاصة، يرجى تسجيل الدخول إلى بوابة التاجر باستخدام حساب المطعم، ثم الانتقال إلى إعدادات العمليات، واختيار إعدادات ساعات العمل، وبعدها الضغط على الساعات الخاصة اضغط على تعديل بجانب ساعات العمل الحالية، ثم اضغط على أيقونة سلة المهملات الموجودة على الجهة اليمنى. أخيرًا، اضغط على إرسال لتأكيد وحفظ التغييرات`,
 
       "min-order": `(Keeservice (FAQ) = Restaurant information modification)
       
@@ -1686,7 +1910,22 @@ AR - Script
       
 (شرح توضيحي للمشكلة)
 
- يتواصل التاجر يريد تعديل الإسم أو الفئة أو العنوان الخاص بالمتجر 
+( يتواصل التاجر يريد تعديل احدى هذه المعلومات) 
+
+ الأسم 
+ Name
+ العنوان 
+ Address
+ الفئة 
+ Category
+ رخصة النشاط التجاري
+Commercial Activity License
+السجل التجاري
+Commercial Registration
+ معلومات الفواتير
+ Invoice Information
+ معلومات الضريبة المضافة
+ VAT Information
 
 (خطوات الحل)
 
@@ -1701,7 +1940,7 @@ We appreciate your understanding
 
 AR - Script
 
-حاليًا التاجر لا يمتلك صلاحية تعديل معلومات المتجر. سنقوم بالتواصل مع مدير أعمالك  لمساعدتك في تنفيذ التعديلات المطلوبة
+حاليًا التاجر لا يمتلك صلاحية تعديل هذه المعلومات بشكل يدوي . سنقوم بالتواصل مع مدير أعمالك  لمساعدتك في تنفيذ التعديلات المطلوبة
 نقدر تفهّمك ونتطلع إلى خدمتك دائمًا 
 
 ----------------------------------------------------------
@@ -1751,12 +1990,12 @@ AR - Script
  EN - Script 
 
 To get your bills, please log in to the merchant backend via computer. Navigate to Financial Management, then select Invoice. You will see a list of settled bills; next to each one, there are two download buttons : The first one is )Invoice) It contains a summary of settled amounts and fees and the second one is (Order Summary) It contains a detailed report for each order
-Plese Note: these bills appear only after payment is confirmed to your bank card
+Plese Note: these bills appear only after payment is confirmed to your bank card and Merchants are restricted to one invoice issuance per month
 
 AR - Script
 
 للحصول على فواتيرك، يُرجى تسجيل الدخول إلى واجهة المطعم الخلفية عبر الكمبيوتر. اذهب إلى إدارة المالية، ثم اختر الفواتير. سترى قائمة بالفواتير المدفوعة؛ بجانب كل واحدة، هناك زران للتنزيل: الأول هو (الفاتورة) ويحتوي على ملخص للمبالغ المدفوعة والرسوم، والثاني هو (ملخص الطلب) ويحتوي على تقرير مفصل لكل طلب
- ملاحظة : هذه الفواتير تظهر فقط بعد تأكيد الدفع إلى بطاقة البنك الخاصة بك 
+ ملاحظة : هذه الفواتير تظهر فقط بعد تأكيد الدفع إلى بطاقة البنك الخاصة بك و يُسمح للتاجر بإصدار فاتورة واحدة فقط شهرياً 
 
 ---------------------------------------------------------- 
 
@@ -1826,6 +2065,87 @@ Store Contact Information:966-
 The brand manager:
 Full Description :`,
 
+
+
+"refund-disputes": `(Keeservice (FAQ) = Inquiry about refund disputes)
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر بعد رفعه للاعتراض ويسال عن حالته اذا ما تم قبوله او رفضه أو تواصل يسال عن قيمه التعويض الذي تمت على الطلب 
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+( (1) اذا كان سؤال التاجر عن حاله الأعتراض الذي قام برفعه )
+
+( لا زال الاعتراض قيد المراجعة )
+اخبار التاجر انه لا يوجد فترة محددة لانتهاء المراجعة وانه سيتم الانتهاء في اقرب وقت ممكن 
+
+EN - Script
+
+Regarding your appeal , we would like to inform you that it is still under review. Please note that there is no specific timeframe for completion, as this ensures accuracy and a fair decision. Thank you for your patience and understanding
+
+AR - Script
+
+بالنسبة لاعتراضك، نفيدك بأنه لا زال تحت المراجعة؛ وحابب اوضحلك أنه لا يوجد وقت محدد لانتهاء المراجعة وذلك لضمان الدقة واتخاذ قرار عادل، شاكرين لك صبرك وتفهمك
+
+
+(  تم قبول الاعتراض )
+اخبار التاجر بالنتيجة  واخباره انه سيتم تسوية قيمه الطلب بشكل طبيعي في الدورة المالية الاسبوعية 
+
+EN - Script
+
+Regarding your appeal, we are pleased to inform you that it has been accepted. The order value will be settled normally during the weekly financial cycle. Thank you for your patience
+
+AR - Script
+
+بالنسبة لاعتراضك، حابب ابلغك بأنه تم قبوله، وسيتم تسوية قيمة الطلب بشكل طبيعي ضمن الدورة المالية الأسبوعية. شاكرين لك صبرك وتفهمك
+
+
+( تم رفض الاعتراض )
+اخبار التاجر بالنتيجة وسبب رفض الاعتراض   
+
+EN - Script
+
+Regarding your appeal, we regret to inform you that it has been rejected because the evidence provided was not clear enough. Thank you for your understanding
+
+AR - Script
+
+بالنسبة لاعتراضك، نفيدك بأنه تم رفض الاعتراض نظراً لأن الدليل المرسل لم يكن واضحاً بما يكفي. شاكرين لك تفهمك
+
+----------------------------------------------------------
+
+( (2) اذا كان سؤال التاجر عن قيمه التعويض على الطلب )
+
+EN - Script
+
+Regarding your inquiry, we would like to inform you that the compensation amount processed for this order is () SAR
+
+AR - Script
+
+بالنسبة لاستفسارك، نفيدك بأن قيمة التعويض التي تمت على هذا الطلب هي () ريال سعودي
+
+`,
+      "order-compensation": `(Keeservice (FAQ) = Disputes over lost item/order compensation)
+
+      (شرح توضيحي للمشكلة)
+يتواصل التاجر يطلب تعويض بسبب خسارة الطعام بشكل مباشر بدون السؤال عن سبب الألغاء ويسأل عن خطوات تقديم الاعتراض 
+
+        (خطوات الحل)
+        
+----------------------------------------------------------
+
+( تهدئة التاجر وتوجيهه الى ان يقوم بتقديم اعتراض على خسارة الطعام )
+
+EN - Script
+
+I completely appreciate your concern and sincerely regret the loss of the meal. To ensure your case is studied, I advise you to submit a formal appeal via the Keeta Partner app or PC within 7 days of the order date. You can do this by going to the order details and clicking 'Appeal' under the 'Refund Information' section, then explaining the issue and attaching available evidence along with the receipt photo. Once submitted, your request will be sent directly to a specialized team for investigation to ensure a fair decision is made. Please note that an appeal can only be submitted once per order
+
+AR - Script
+
+أقدر تماماً حرصك، ويؤسفني ما واجهته بخصوص خسارة الوجبة. لضمان دراسة الحالة، أنصحك بتقديم اعتراض رسمي عبر تطبيق شريك كيتا أو من خلال جهاز الحاسوب خلال 7 أيام من تاريخ الطلب؛ وذلك عبر التوجه إلى تفاصيل الطلب والضغط على خيار 'اعتراض' أسفل قسم 'معلومات الاسترجاع'، وشرح المشكلة وإضافة الأدلة المتوفرة مع صورة للفاتورة. بمجرد رفعك للطلب، سيتم إرساله مباشرة إلى فريق مختص للتحقيق في تفاصيل الطلب لاتخاذ قرار عادل، علماً أن النظام يتيح تقديم الاعتراض مرة واحدة فقط لكل طلب`,
+    
       "refund-result": `(Keeservice (FAQ) =  Inquiry about order refund result)
 
 (شرح توضيحي للمشكلة)
@@ -1896,8 +2216,6 @@ AR - Script
 
 ( هذه الرسالة تظهر عندما يقوم العميل بطلب استرداد مباشر من التاجر )
 
-----------------------------------------------------------
-
 (اذا كان التاجر قد قام بتحضير الطلب بالفعل فيحق له رفض الاسترداد)
 
 EN - Script
@@ -1906,7 +2224,6 @@ If the merchant has already served the meal, you have the right to refuse the cu
 AR - Script
 إذا كان التاجر قد جهّز الطلب بالفعل، فلك الحق في رفض طلب استرداد المبلغ من العميل لتجنب أي خسائر
 
-----------------------------------------------------------
 
 (اذا كان سبب الاسترداد غير مطابق لما حدث فعليا يحق له رفض الاسترداد  )
 
@@ -1967,17 +2284,29 @@ AR - Script
 
 ----------------------------------------------------------
 
+( (1) اذا كان استرداد الطلب قبل قبول التاجر له )
+
+EN - Script
+
+Before the merchant accepts the order, if the customer initiates a cancellation, the customer will receive a penalty-free refund, and there will be no compensation for the merchant's food loss
+
+AR - Script
+
+إذا قام العميل بإلغاء الطلب قبل قبول المطعم للطلب، سيسترجع العميل أمواله كاملة بدون أي رسوم أو عقوبات، ولن يكون هناك أي تعويض للمطعم عن خسارة الأكل
+
+
+----------------------------------------------------------
+
+( (2) اذا كان استرداد الطلب بعد قبول التاجر له )
+(هنالك عده حالات ويتم تزويد التاجر بالحل حسب الحالة)
+
+----------------------------------------------------------
+
 (Automatic refund successfully)
 
-( هذه الرسالة تظهر عندما يقوم العميل بطلب استرداد مباشر من التاجر ولا يقوم التاجر بمعالجة الطلب في الوقت المحدد مما يؤدى الى استرداد الطلب بشكل اوتوماتيكي من النظام  )
+( هذه الرسالة تظهر عندما يقوم العميل بطلب استرداد مباشر من التاجر ولا يقوم التاجر بمعالجة الطلب في الوقت المحدد والذي هو 15 دقيقة مما يؤدى الى استرداد الطلب بشكل اوتوماتيكي من النظام  )
 
-----------------------------------------------------------
-
-(الوقت المخصص للمراجعة 15 دقيقة )
-
-----------------------------------------------------------
-
-(تزويد التاجر بسياسة الاسترداد الاوتوماتيكي )
+(يتم تزويد التاجر بسياسة الاسترداد الاوتوماتيكي )
 
 EN - Script
 
@@ -2476,7 +2805,7 @@ AR - Script
 
 نود توضيح سبب إغلاق المتجر، حيث عند قيام أول سائق بالإبلاغ بأن المتجر مغلق، يتم منح المتجر مدة 8 دقائق لتأكيد الحالة عبر نظام نقاط البيع. في حال عدم تأكيد الإغلاق خلال هذه المدة، يقوم النظام تلقائيًا بإلغاء الطلب وتغيير حالة المتجر إلى مغلق. ويمكنكم إعادة فتح المتجر يدويًا من خلال الدخول إلى تطبيق  أو الكمبيوتر أو التطبيق المحمول، ثم التوجه إلى إعدادات التشغيل، ساعات العمل، والتبديل إلى حالة إعادة الفتح يدويًا، أو سيتم تحويل حالة المتجر تلقائيًا إلى مفتوح عند بداية ساعات العمل التالية المحددة في النظام`, 
 
-      "block-courier": `(Keeta Service (FAQ) = Inquiry about system operations (PC/APP/POS))
+      " blacklist-rider": `(Keeta Service (FAQ) = Inquiry about system operations (PC/APP/POS))
 
       (شرح توضيحي للمشكلة)
 
@@ -2691,6 +3020,7 @@ AR - Script
 
 يمكنك استرداد المبلغ للعميل كما يلي:
 اذهب إلى "طلبات اليوم" → "مقبولة" → "مشكلة في الطلب"، ثم اختر سبب الاسترجاع واضغط على "تأكيد الاسترجاع"
+
 ----------------------------------------------------------
 
 ((4) اذا اصر التاجر على المساعدة من قبل خدمه العملا يتم استرداد قيمه الاصناف او الطلب كاملا حسب الحالة )
@@ -2707,69 +3037,7 @@ AR - Script
 
 Refund = Rsponsible Party: Merchant - Restaurant not open for business
 compensation = -5 SAR- Rsponsible Party: Merchant - Restaurant not open for business  
-`,    
-
-"rest-closed" : ` (Keeservice (FAQ) = The restaurant is closed)
-
-(شرح توضيحي للمشكلة)
-
-يتواصل التاجر للابلاغ أنه لا يمكنه تحضير الطلب لانه اغلق  
-
-(خطوات الحل)
-
-----------------------------------------------------------
-
-((1) التاكد مما اذا كان تم التواصل مع العميل والوصول الى حل ) 
-
- EN - Script 
-
-Have you informed the customer about the unable to prepare meals issue?
-
-AR - Script
-
-هل قمت بإبلاغ العميل بمشكلة عدم القدرة على تحضير الوجبات؟
-
-----------------------------------------------------------
-
-((2) اذا لم يتم التواصل يتم نصح التاجر بالتواصل مع العميل مباشرة )
-
- EN - Script 
-
-Thanks for reaching out, I recommend you contact the customer directly to find a solution. If needed, I can help with the refund process
-AR - Script
-
-شكرًا لتواصلك. أنصحك بالتواصل المباشر مع العميل لإيجاد حل. وإذا احتجت، أنا هنا للمساعدة في عملية استرداد المبلغ
-
-----------------------------------------------------------
-
-((3) اذا تم التواصل بين التاجر والعميل واتفقا على الغاء الطلب او استرداد جزئي يتم توجيه التاجر بالقيام بالاجراء بشكل يدوي )
-
- EN - Script 
-
-You can refund the customer as follows:
-Go to "Today's Order" -> "Accepted" -> "Order Issue" then choose the reason for refund, and tap "Confirm Refund"
-
-AR - Script
-
-يمكنك استرداد المبلغ للعميل كما يلي:
-اذهب إلى "طلبات اليوم" → "مقبولة" → "مشكلة في الطلب"، ثم اختر سبب الاسترجاع واضغط على "تأكيد الاسترجاع"
-
-----------------------------------------------------------
-
-((4) اذا اصر التاجر على المساعدة من قبل خدمه العملاء يتم استرداد قيمه الاصناف او الطلب كاملا حسب الحالة )
-
- EN - Script 
-
-I'll assist with the cancellation for the customer. In the future, please close on time to avoid affecting the customer experience
-
-AR - Script
-
-سأساعد في إلغاء الطلب للعميل. في المستقبل، يرجى إغلاق الطلب في الوقت المحدد لتجنب التأثير على تجربة العميل
-
-----------------------------------------------------------
-
-Refund = Rsponsible Party: Merchant 
-compensation = -5 SAR - Rsponsible Party - Merchant`, 
+`,     
       
 "rest-busy" : ` (Keeservice (FAQ) = The restaurant is busy and can't accept orders)
 
@@ -2833,70 +3101,472 @@ AR - Script
 Refund = Rsponsible Party: Merchant 
 compensation = -5 SAR - Rsponsible Party - Merchant`,   
 
-
-      "order-taken" : ` (Keeservice (FAQ) = The order has been taken by someone else) 
+"Praise-BD" : ` (Keeservice (FAQ) = Uncommon issue)
 
 (شرح توضيحي للمشكلة)
 
-يتواصل التاجر للأبلاغ أنه قام بتسليم الطلب الى سائق ثم جاء سائق جديد يريد نفس الطلب 
+يتواصل التاجر للمدح في مدير الاعمال 
 
 (خطوات الحل)
 
 ----------------------------------------------------------
 
-((1) التاكد من عدد السائقين الذين تم تعيينهم على الطلب )
-
-----------------------------------------------------------
-
-(سائق واحد - يتم التحقق اذا ما كان السائق قام برفع بلاغ  )
-
-اذا كان السائق قد رفع بلاغ تكون المسؤولية على السائق  
-اذا لم يكن السائق قد رفع بلاغ  تكون المسؤولية على التاجر 
-
-----------------------------------------------------------
-
-(سائقين أثنين  ) 
-
-يتم الغاء الطلب والمسؤولية تكون على السائق الأول
-
-----------------------------------------------------------
-
-(ثلاث سائقين او اكثر )
-
-- يتم الأتصال بالسائق الاول والسائق ما قبل الأخير للتحقق اذا ما كانوا قد استملوا الطلب
-
-- اذا تم العثور على السائق الذي استلم الطلب يتم الغاء الطلب وتحميله المسؤولية
-
-- اذا لم يتم العثور على السائق الذي استلم الطلب يتم  الغاء الطلب والمسؤولية تكون على المنصة نيابة عن السائق
-
-----------------------------------------------------------
-
-(اذا كانت المسؤولية على سائق )
-Responsibility rider
-Refund reason - The meal was taken by someone else
-Compensation reason - 5 SAR - The meal was taken by someone else
-
-
-(اذا كانت المسؤولية على التاجر )
-Responsibility merchant
-Refund reason - Food theft(taken/misplaced inside the restaurant)
-Compensation reason - 5 SAR - Food loss/Taken by someone else
-
-
-(اذا كانت المسؤولية على المنصة من أجل السائق )
-Responsibility Platform for Rider
-Refund reason - The meal was taken by someone else
-Compensation reason - 5 SAR - The meal was taken by someone else
-
-----------------------------------------------------------
-
-(scripts)
+((1) فهم الموقف من التاجر من ثم تصعيده للفريق المختص )
 
 EN - Script
-  Thank you for your patience, after verification，the order will be canceled and the customer will receive a full refund and compensation. You can continue to accept new orders as usual. Thank you for your understanding
+
+Thank you very much for your feedback. We will continue to strive for improvement, and your encouragement is the driving force behind our ongoing enhancement of services
 
 AR - Script
-  شكرا على صبرك وتعاونك! بعد ما تم التحقق، الطلب تم إلغاؤه، والعميل راح يسترجع كامل المبلغ مع التعويض. تقدر تكمل في استلام الطلبات الجديدة كالمعتاد. شكرًا لتفهمك، والله يعطيك العافية!`,
+
+شكرًا جزيلاً على ملاحظاتك. رح نواصل السعي للتحسين، وتشجيعك هو الدافع وراء تعزيز خدماتنا بشكل مستمر
+
+----------------------------------------------------------
+
+(EscalationTemplate)
+
+Feedback time:
+
+Case ID:
+
+Store ID:
+
+Store Name:
+
+Store Address:
+
+Store Contact Information:966-
+
+The brand manager:
+
+Full Description :`,
+
+
+"Couriers-steal-food" :` (Keeservice (FAQ) = The courier stole food)
+
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر للشكوى بسبب ان السائق سرق الطلب
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+((1) توجيه التاجر بانه يجب على العميل التواصل معنا بشكل مباشر )
+
+EN - Script
+
+Please suggest that the user contact customer service, we will do our best to solve the problem for the customer
+
+AR - Script
+
+
+من فضلك اقترح على العميل ان يتواصل مع خدمة العملاء، ونحن راح نبذل جهدنا لحل المشكلة بأسرع وقت ممكن
+
+----------------------------------------------------------
+
+((2) اذا اصر التاجر على مساعدة خدمه العملاء يتم التحقيق في المشكلة )
+
+
+(يتم طلب دليل على سرقة الطلب من قبل السائق )
+تصوير كاميرة للسائق وهو يفتح الطلب او يأكل منه 
+
+
+
+(اذا لم يتوفر لدى التاجر دليل او انه غير معتمد يتم اخباره بأن ينصح العميل بالتواصل معنا بشكل مباشر )
+
+
+EN - Script
+
+Thank you for reaching out. At this stage, we kindly ask you to direct the customer to contact us directly, so we can address and resolve the issue in the best possible way. Thank you for your understanding and patience
+
+AR - Script
+
+نشكرك على تواصلك. حالياً، نرجو منك توجيه العميل للتواصل معنا مباشرة؛ وذلك لنتمكن من معالجة المشكلة وحلها بأفضل شكل ممكن. شكراً لك على تفهمك وصبرك
+
+(اذا قام التاجر بتزويدك بدليل معتمد يتم الغاء الطلب وتصعيد المشكلة )
+
+EN - Script
+
+Thank you for providing the evidence, which is clear and sufficient. Accordingly, the order will be canceled, and the courier will be held fully responsible. And we will escalate this issue to our specialized couriers Support Team to take all necessary actions
+
+AR - Script
+
+نشكرك على الدليل المرسل، فهو واضح ومكتمل؛ وبناءً عليه سيتم إلغاء الطلب فوراً مع تحميل السائق المسؤولية الكاملة عن ذلك. كما سيتم تصعيد المشكلة إلى الفريق المختص بمتابعة السائقين لاتخاذ كافة الإجراءات اللازمة
+
+----------------------------------------------------------
+
+Refund+ 5 SAR compensation (voucher)
+
+Responsibility rider
+
+Refund reason - Courier damaged food - not spilled
+
+Compensation reason - Courier damaged food - not spille
+
+----------------------------------------------------------
+
+(EscalationTemplate)
+
+Merchant Problem ：Rider steal food
+
+Feedback time:
+
+Case ID：
+
+Order ID：
+
+RiderID ：
+
+Full Description :`,
+
+"Withdraw-complaint" :` (Keeservice (FAQ) = Withdraw a complaint)
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر لسحب الشكوى التي قام برفعها مسبقا 
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+((1) فهم الموقف وتصعيده للفريق المختص )
+
+EN - Script
+
+Thank you very much for your feedback. We will continue to strive for improvement, and your encouragement is the driving force behind our ongoing enhancement of services
+
+
+AR - Script
+
+شكرًا جزيلاً على ملاحظاتك. رح نواصل السعي للتحسين، وتشجيعك هو الدافع وراء تعزيز خدماتنا بشكل مستمر
+
+----------------------------------------------------------
+
+(Escalation Template)
+
+Feedback time:
+
+Case ID:
+
+Store ID:
+
+Store Name:
+
+Store Address:
+
+Store Contact Information:966-
+
+The brand manager:
+
+Full Description :`,
+
+
+"Orders-history" : ` (Keeservice (FAQ) = Inquiry about system operations (PC/APP/POS))
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر يسال عن لوحة عرض الطلبات ومحتوياتها  
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+((1) سجل الطلبات وفلترتها )
+
+EN - Script
+Regarding your inquiry about the order history, please be advised that you can only view your order records for the past 7 days. Additionally, the system allows you to select a specific date within this week and filter results based on Order Status (e.g., Completed, Cancelled) to help you find your data easily
+
+AR - Script
+ بالنسبة لاستفسارك عن سجل الطلبات، يرجى العلم بأنه يمكنك عرض سجل الطلبات الخاصة بك لآخر 7 أيام فقط. كما يتيح لك النظام اختيار أي تاريخ محدد ضمن هذا الأسبوع للبحث فيه، مع إمكانية تصنيف النتائج حسب حالة الطلب (مثل: مكتمل أو ملغي) لتسهيل الوصول إلى بياناتك
+
+----------------------------------------------------------
+
+((2) اجمالي المبالغ المستحقة على الطلبات )
+EN - Script
+Regarding your inquiry about the total amounts due, please be advised that at the top of the order history page, there is a display board that shows the total amount paid by customers and the total product amount for the date you selected in the search. This allows you to track your dues accurately
+AR - Script
+النسبة لاستفسارك عن إجمالي المبالغ المستحقة، يرجى العلم بأنه يوجد في أعلى لصفحة سجل الطلبات يوجد لوحة بيانات تعرض لك إجمالي المبلغ الذي دفعه العملاء وإجمالي مبالغ المنتجات للتاريخ الذي قمت بتحديده في البحث، مما يتيح لك معرفة مستحقاتك بدقة
+
+----------------------------------------------------------
+
+((3) سبب اختفاء معلومات العملاء من معلومات الطلبات )
+EN - Script
+Regarding your inquiry about why customer information has disappeared, please be advised that the platform hides it automatically 4 hours after the order is completed, in compliance with our customer privacy protection policy. If you have any further inquiries regarding this order, please provide them to me so I can assist you in the best way possible
+AR - Script
+ بالنسبة لاستفسارك عن سبب اختفاء معلومات العملاء، يرجى العلم بأن المنصة تقوم بإخفائها تلقائياً بعد مرور 4 ساعات من إتمام الطلب، وذلك التزاماً بسياسة حماية خصوصية العملاء. إذا كان لديك أي استفسار آخر بخصوص هذا الطلب، يرجى تزويدي به لمساعدتك بأفضل شكل ممكن 
+`,
+
+
+      "Resting-rule" : ` (Keeservice (FAQ) = Inquiry about system operations (PC/APP/POS))
+
+      (شرح توضيحي للمشكلة)
+
+يستفسر التاجر عن سبب تحول حالة المتجر إلى "وضع الأستراحه" ويرغب في معرفة كيفية إعادة تفعيل المتجر واستقبال الطلبات مرة أخرى
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+(1) توضيح أن النظام يقوم بإغلاق بتحويل حالة المطعم تلقائيا في حال عدم قبول الطلبات الواردة خلال الوقت المحدد
+(2) توجيه التاجر لتغيير حالة المتجر إلى "مفتوح" يدوياً من خلال الإعدادات
+
+----------------------------------------------------------
+
+(الحاسوب)
+
+EN - Script
+
+If you do not accept orders within the specified time, the store will automatically switch to resting status. To re-open: Go to Operation Settings → Opening Hours → manually switch the toggle to re-open status
+
+AR - Script
+
+إذا لم يتم قبول الطلبات خلال الوقت المحدد، سيتحول المتجر تلقائياً إلى وضع الراحة. لإعادة الفتح: اذهب إلى إعدادات التشغيل ← ساعات العمل ← قم بتبديل الحالة إلى "إعادة فتح" يدوياً
+
+
+(تطبيق الهاتف)
+
+EN - Script
+
+The store switches to resting status automatically if orders are missed. To re-open: Log in to the app, go to More → Store Settings → Operation Settings → Opening Hours, and manually switch to re-open status
+
+AR - Script
+
+يتحول المتجر إلى وضع الراحة تلقائياً عند عدم قبول الطلبات. لإعادة الفتح: سجل الدخول إلى التطبيق، اذهب إلى المزيد ← إعدادات المتجر ← إعدادات التشغيل ← ساعات العمل، وقم بتبديل الحالة إلى "إعادة فتح" يدوياً
+
+(جهاز نقاط البيع)
+
+EN - Script
+
+If you do not accept orders within the specified time, the store will automatically switch to resting status. To re-open: Go to Operation Settings → Opening Hours → manually switch the toggle to re-open status
+
+AR - Script
+
+إذا لم يتم قبول الطلبات خلال الوقت المحدد، سيتحول المتجر تلقائياً إلى وضع الراحة. لإعادة الفتح: اذهب إلى إعدادات التشغيل ← ساعات العمل ← قم بتبديل الحالة إلى "إعادة فتح" يدوياً`,
+
+
+
+"No-network" : ` (Keeservice (FAQ) = Hardware setting (POS/Printer))
+
+ (شرح توضيحي للمشكلة)
+
+يتواصل التاجر بسبب ان جهاز نقاط البيع فيه مشكلة بالشبكة وغير متصل بالانترنت 
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+(تزويد التاجر ببعض النصائح ولو استمرت المشكلة يتم تصعيدها الى فريق الصيانه )
+EN - Script
+
+1- If you are using a SIM card, but the SIM card icon does not appear in the upper left corner of the screen, ensure that the SIM is inserted correctly. Try removing and re-inserting it several times, then turn on the device to verify that the card is detected. After that, power on the device to check for card recognition
+2- If the attempts do not succeed after 5 tries, it is recommended to connect to the network via Wi-Fi
+3- If the problem persists after these attempts, I will escalate the issue to the maintenance team to provide you with a new device
+AR - Script
+
+١- إذا كنت تستخدم بطاقة شريحة الهاتف، ولكن لا يظهر رمز بطاقة شريحة الهاتف في الزاوية اليسرى العليا من الشاشة . تأكد إن الشريحة مركبة بشكل ، جرب تسحبها وتدخلها أكثر من مرة، وبعدها شغل الجهاز للتأكد من اكتشاف البطاقة. بعد ذلك، قم بتشغيل الجهاز للتحقق من التعرف على البطاقة
+٢- إذا لم تنجح المحاولات بعد 5 مرات، يُوصى بالاتصال بالشبكة عبر الوايفاي
+٣- اذا استمرت المشكلة بعد هذه المحاولات ساقوم برفع المشكلة الى فريق الصيانه حتى يتم توفير جهاز جديد لحضرتك
+
+----------------------------------------------------------
+
+(Escalation Template)
+
+Feedback time:
+
+Case ID:
+
+Store ID:
+
+Store Name:
+
+Store Address:
+
+Store Contact Information:966-
+
+The brand manager:
+
+Full Description :`,
+
+
+"update-page" : ` (Keeservice (FAQ) = Hardware setting (POS/Printer))
+
+ (شرح توضيحي للمشكلة)
+
+يتواصل التاجر بسبب ان الجهاز عالق على شاشة التحديث - شاشة صفراء 
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+(توضيح المشكلة للتاجر ثم تزويده ببعض النصائح ولو استمرت المشكلة يتم تصعيد المشكلة)
+EN - Script
+
+1- A yellow background page indicates that the APP is being updated
+2- If you stay on this page for a long time, it may be a network problem that causes the update to be slow. It is recommended to check the SIM network or change the wifi
+3- If it exceeds 15 minutes , I will escalate the issue to the maintenance team to provide the necessary assistance
+AR - Script
+
+١- تشير الصفحة ذات الخلفية الصفراء إلى أن التطبيق قيد التحديث
+٢- إذا استمر بقاؤك على هذه الصفحة لفترة طويلة، فقد تكون هناك مشكلة في الشبكة تتسبب في بطء التحديث؛ لذا يُنصح بالتحقق من شبكة شريحة الهاتف أو التغيير إلى شبكة الواي فاي
+٣-  إذا تجاوز الأمر ١٥ دقيقة، سأقوم برفع المشكلة إلى فريق الصيانة لتقديم المساعدة اللازمة
+
+----------------------------------------------------------
+
+(Escalation Template)
+
+Feedback time:
+
+Case ID:
+
+Store ID:
+
+Store Name:
+
+Store Address:
+
+Store Contact Information:966-
+
+The brand manager:
+
+Full Description :`,
+
+
+"Abnormalities " : ` (Keeservice (FAQ) = Hardware setting (POS/Printer))
+
+ (شرح توضيحي للمشكلة)
+
+يتواصل التاجر بسبب ان الجهاز يوجد به مشكلة في التنبيهات او ان الفاتورة تطبع تفاصيل خاطئة 
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+(يتم تصعيد المشكلة الى فريق الصيانة )
+
+EN - Script
+
+I apologize for any inconvenience caused by this issue. I have just escalated the matter to the maintenance team for immediate follow-up and resolution as quickly as possible. Thank you very much for your cooperation and patience
+
+AR - Script
+أعتذر منك عن أي إزعاج قد تسببت به هذه المشكلة. لقد قمت الآن برفع وتصعيد المشكلة فوراً إلى فريق الصيانة لمتابعتها وحلها في أسرع وقت ممكن. شكراً جزيلاً لتعاونك وصبرك معنا
+
+----------------------------------------------------------
+
+(Escalation Template)
+
+Feedback time:
+
+Case ID:
+
+Store ID:
+
+Store Name:
+
+Store Address:
+
+Store Contact Information:966-
+
+The brand manager:
+
+Full Description :`,
+
+
+"replace"  : ` (Keeservice (FAQ) = Hardware setting (POS/Printer))
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر ليطلب جهاز نقاط بيع جديد 
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+(تصعيد المشكلة الى الفريق المختص )
+
+EN - Script
+
+Regarding your request to change the POS device, please be advised that I will forward your request to your Account Manager to assist you in providing a new device within 48 hours. Thank you for your cooperation
+
+AR - Script
+
+ 
+ بالنسبة لطلبك تغيير جهاز نقاط البيع، يرجى العلم بأنني سأقوم بتمرير طلبك فوراً إلى مدير الحساب الخاص بك لمساعدتك في توفير جهاز جديد خلال 48 ساعة. شكراً لتعاونك معنا
+
+----------------------------------------------------------
+
+(Escalation Template)
+
+Feedback time:
+
+Case ID:
+
+Store ID:
+
+Store Name:
+
+Store Address:
+
+Store Contact Information:966-
+
+The brand manager:
+
+Full Description :`,
+
+      
+"Account-behavior" :` (Keeservice (FAQ) = Hardware setting (POS/Printer))
+
+(شرح توضيحي للمشكلة)
+
+يتواصل التاجر بسبب الحساب مقيد ولا يمكنه تسجيل الدخول بسبب نشاط غير طبيعي 
+
+(خطوات الحل)
+
+----------------------------------------------------------
+
+(توجيه التاجر بأن يحاول اعادة تشغيل الجهاز ولو أستمرت المشكلة يتم تصعيد المشكلة )
+
+EN - Script
+
+Regarding the account restriction or abnormal activity issue, please try restarting your device first as an initial step. If the problem persists after the restart, please let us know immediately so we can escalate the matter to management and add your account to the whitelist to remove the restriction
+AR - Script
+
+ 
+بالنسبة لمشكلة تقييد الدخول أو النشاط غير الطبيعي للحساب، يرجى محاولة إعادة تشغيل الجهاز أولاً كإجراء أولي. في حال استمرت المشكلة بعد إعادة التشغيل، يرجى إعلامنا فوراً لنقوم بتصعيد الأمر إلى الإدارة وإضافة حسابك إلى القائمة البيضاء لفك التقييد عنك
+
+----------------------------------------------------------
+
+(سكريبت التصعيد )
+
+EN - Script
+
+Since the issue persists, it will now be escalated immediately to the relevant department to take the necessary actions and lift the restriction on your account. Thank you very much for your understanding and cooperation
+
+AR - Script
+
+بما أن المشكلة مستمرة  سيتم الآن تصعيدها فوراً إلى القسم المختص لاتخاذ الإجراءات اللازمة وفك التقييد عن حسابك. شكراً جزيلاً لتفهمك وتعاونك معنا
+
+----------------------------------------------------------
+
+(Escalation Template)
+
+Feedback time:
+
+Case ID:
+
+Store ID:
+
+Store Name:
+
+Store Address:
+
+Store Contact Information:966-
+
+The brand manager:
+
+Full Description : `,
+      
   };
 
     const CONTENT_HTML = {}; // reserved for pre-rendered safe HTML if needed
